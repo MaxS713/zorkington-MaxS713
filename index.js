@@ -38,9 +38,7 @@ let directions = [
   "northeast",
   "northwest",
 ];
-let objects = [
-  "mirror",
-]
+let playerInventory = []
 let playerName = "test";
 
 //the Location Class with its constructor
@@ -62,6 +60,45 @@ class RoomObject {
   describe(){
     console.log (`${this.description}`)
     console.log("\nPress any key to continue...")
+  }
+}
+class Item {
+  constructor(name, name2, used) {
+    this.name = name;
+    this.name2 = name2;
+    this.used = used;
+  }
+
+  async use(){
+    console.clear()
+    console.log (`${this.used}`)
+    if (this.name === "package"){
+      let answer = await ask("Do you want to take the Blue Pill or the Red Pill?\n\
+> ")
+      answer = sani(answer)
+      while (answer !== "blue" && answer !== "red") {
+        confirm = await ask(`Answer Blue or Red \n\
+> `);
+      }
+
+      if (answer === "blue") {
+        console.clear();
+        console.log(`\n BLUE PILL ANSWER`);
+        await keypress();
+        process.exit();
+      } else if (answer ==="red"){
+        console.log("Red Pill answer");
+        playerInventory.push(" Blue Pill")
+        await keypress()
+        game()
+      }
+    } else if (this.name === ""){
+
+    } else {
+      key()
+      await keypress()
+      game()
+    }
   }
 }
 
@@ -138,8 +175,23 @@ let objectLookUp = {
   master,
   agent,
 }
-class Item {
-  constructor() {}
+
+
+let package = new Item(
+  "package",
+  " Brown Package",
+  "BROWN PACKAGE",
+)
+
+let remote = new Item(
+  "remote",
+  " Remote Control",
+  "REMOTE",
+)
+
+let itemLookUp = {
+  package,
+  remote,
 }
 
 //Creating the locations
@@ -148,42 +200,47 @@ let room1 = new Location(
   "a room with bright white walls.",
   [" a mirror on the wall"],
   [" a door to the east", " a door to the south", " a door to the north"],
-  [" a brown package"]
+  [" Brown Package"],
 );
 
 let room2 = new Location(
   "second room",
   "a living room with a tv and a red sofa.",
   [" a red sofa", " a tv", " a small end table with a drawer"],
-  [" a door to the west", " a door to the south", " a door to the east"]
+  [" a door to the west", " a door to the south", " a door to the east"],
+  [],
 );
 
 let room3 = new Location(
   "third room",
   "a small room with a black and white rabbit and its rabbit hole.",
   [" a black and white rabbit", " a rabbit hole"],
-  [" a door to the west", " a door to the south-west"]
+  [" a door to the west", " a door to the south-west"],
+  [],
 );
 
 let room4 = new Location(
   "the fourth room",
   "an office room.",
   [" a desk with a drawer", " an old desktop computer", " a safe"],
-  [" a door to the north-east", " a door to the north", " a door to the west"]
+  [" a door to the north-east", " a door to the north", " a door to the west"],
+  [],
 );
 
 let room5 = new Location(
   "the fifth room",
   "a dojo.",
   [" a martial art master"],
-  [" a door to the east", " a door to the north"]
+  [" a door to the east", " a door to the north"],
+  [],
 );
 
 let room6 = new Location(
   "End City",
   "a city in ruins",
   [" an agent"],
-  [" a door to the south"]
+  [" a door to the south"],
+  [],
 );
 
 //Look up table
@@ -195,8 +252,6 @@ let locationLookUp = {
   room5,
   room6,
 };
-
-
 
 //State machine
 let locationStates = {
@@ -246,7 +301,7 @@ function log(log){
 }
 
 function key(){
-  console.log("\nPress any key to continue...")
+  console.log("\n> Press any key to continue...")
 }
 
 function notSure(){
@@ -353,7 +408,7 @@ async function game() {
 // You hear the sound of something falling on the ground, \
 // the person who knocked passed a package through a slot in a door\n\
 // As you stand up, you startle a black and white rabbit that runs through a small hole in the wall going east\n\
-// > Press any key to continue")
+// key()")
 //     await keypress();
 //   }
 
@@ -362,7 +417,7 @@ async function game() {
 //     console.log("As you enter a room, you can see the black and white rabbit \
 // continuing to hop towards the east\n\
 // The room is very odd, it's entirely empty except for a red sofa and an old CRT TV on a small end table...\n\
-// > Press any key to continue")
+// key()")
 //     await keypress();
 //   }
 
@@ -378,7 +433,7 @@ async function game() {
 //     room4Loop++
 //     console.log("You enter a room that looks like an office room\n\
 // In it, there's a desk with an ancient IBM desktop computer. In the corner of the room, you also notice a safe.\n\
-// > Press any key to continue")
+// key()")
 //     await keypress();
 //   }
 
@@ -387,7 +442,7 @@ async function game() {
 //     console.log("The room your enter is a dojo\n\
 // You're surprised to see someone is here. What seems to be a martial art expert stands in the center.\n\
 // He doesn't say anything - he's staring at you, silently.\n\
-// > Press any key to continue")
+// key()")
 //     await keypress();
 //   }
 
@@ -395,10 +450,13 @@ async function game() {
   console.log(`You are in the ${locationLookUp[locationCurrent].name}, \
 ${locationLookUp[locationCurrent].description}\n`);
   console.log(`What you can see around you:${locationLookUp[locationCurrent].objectsInRoom}...\n`);
-  if (locationLookUp[locationCurrent].roomInventory) {
+  if (locationLookUp[locationCurrent].roomInventory.length !== 0) {
     console.log(`The room contains:${locationLookUp[locationCurrent].roomInventory}\n`);
   }
   console.log(`Doors you can go through:${locationLookUp[locationCurrent].doors}\n`);
+  if (playerInventory.length !== 0 ){
+    console.log(`Your inventory:${playerInventory}\n`)
+  }
 
   let answer = await ask("What would you like to do?\n\n\
 > ");
@@ -410,7 +468,7 @@ ${locationLookUp[locationCurrent].description}\n`);
   if (splitAnswer.includes("inspect")){
     for (let word of splitAnswer){
       if (objectLookUp[word]){
-        if(objectLookUp[word].name){
+        if (objectLookUp[word].name){
           console.clear()
           objectLookUp[word].describe()
           await keypress()
@@ -425,7 +483,7 @@ ${locationLookUp[locationCurrent].description}\n`);
     }     
   } else if (splitAnswer.includes("go")|| splitAnswer.includes("move")) {
 
-    for(let word of splitAnswer){
+    for (let word of splitAnswer){
       if (directions.includes(word)){
         if (locationStates[locationCurrent].includes(word)){
           checkLoop++;
@@ -456,6 +514,44 @@ ${locationLookUp[locationCurrent].description}\n`);
         } else {
           notSure()
           setTimeout(game, 2500);
+        }
+      }
+    }
+  } else if (splitAnswer.includes("use")){
+    for (let word of splitAnswer){
+      if(itemLookUp[word]){
+        if (itemLookUp[word].name){
+          itemLookUp[word].use()
+          if (playerInventory.includes(itemLookUp[word].name2)){
+            let i = playerInventory.indexOf(itemLookUp[word].name2);
+            playerInventory.splice(i, 1);
+          } else if (locationLookUp[locationCurrent].roomInventory.includes(itemLookUp[word].name2)){
+            let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
+            locationLookUp[locationCurrent].roomInventory.splice(i, 1);
+          }
+        } else {
+          notSure()
+          key()
+          await keypress()
+          game()
+        }
+      }
+    }
+  } else if (splitAnswer.includes("take")){
+    for (let word of splitAnswer){
+      if(itemLookUp[word]){
+        if (itemLookUp[word].name){
+          console.log(`\nYou pick up the${itemLookUp[word].name2}`)
+          playerInventory.push(itemLookUp[word].name2)
+          let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
+          locationLookUp[locationCurrent].roomInventory.splice(i, 1);
+          await keypress()
+          game()
+        } else {
+          notSure()
+          key()
+          await keypress()
+          game()
         }
       }
     }
