@@ -2,6 +2,7 @@
 const { ok } = require("assert");
 const { clear } = require("console");
 const readline = require("readline");
+const { runInThisContext } = require("vm");
 const readlineInterface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -57,9 +58,14 @@ class RoomObject {
     this.name = name
     this.description = description
   }
-  describe(){
+  async describe(){
     console.log (`${this.description}`)
-    console.log("\nPress any key to continue...")
+    if (this.name === "table"){
+      locationLookUp[locationCurrent].roomInventory.push(" Remote Control")
+    }
+    key()
+    await keypress()
+    game()
   }
 }
 class Item {
@@ -80,20 +86,19 @@ class Item {
         confirm = await ask(`Answer Blue or Red \n\
 > `);
       }
-
       if (answer === "blue") {
-        console.clear();
-        console.log(`\n BLUE PILL ANSWER`);
-        await keypress();
-        process.exit();
+        bluePill.use()
       } else if (answer ==="red"){
         console.log("Red Pill answer");
         playerInventory.push(" Blue Pill")
         await keypress()
         game()
       }
-    } else if (this.name === ""){
+    } else if (this.name === "pill"){
+      await keypress()
+      process.exit()
 
+      
     } else {
       key()
       await keypress()
@@ -179,19 +184,54 @@ let objectLookUp = {
 
 let package = new Item(
   "package",
-  " Brown Package",
+  "Brown Package",
   "BROWN PACKAGE",
 )
 
 let remote = new Item(
   "remote",
-  " Remote Control",
+  "Remote Control",
   "REMOTE",
+)
+
+let bluePill = new Item(
+  "pill",
+  "Blue Pill",
+  "BLUE PILL ANSWER"
+)
+
+let disk = new Item(
+  "disk",
+  "Floppy Disk",
+  "Floppy DISK ACTION",
+)
+
+let carrot = new Item(
+  "carrot",
+  "Carrot",
+  "CARROT ACTION",
+)
+
+let gun = new Item(
+  "gun",
+  "Gun",
+  "Gun action",
+)
+
+let kungFu = new Item(
+  "kung",
+  "Kung-Fu Skills",
+  "Kung-Fu ACTION",
 )
 
 let itemLookUp = {
   package,
   remote,
+  bluePill,
+  disk,
+  carrot,
+  gun,
+  kungFu,
 }
 
 //Creating the locations
@@ -200,7 +240,7 @@ let room1 = new Location(
   "a room with bright white walls.",
   [" a mirror on the wall"],
   [" a door to the east", " a door to the south", " a door to the north"],
-  [" Brown Package"],
+  ["Brown Package"],
 );
 
 let room2 = new Location(
@@ -471,8 +511,6 @@ ${locationLookUp[locationCurrent].description}\n`);
         if (objectLookUp[word].name){
           console.clear()
           objectLookUp[word].describe()
-          await keypress()
-          game()
         } else {
           notSure()
           key()
