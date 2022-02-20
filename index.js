@@ -140,8 +140,8 @@ class Item {
       console.clear();
       log(
         "You open the package, inside you see an envelope that says: Welcome to the Xirtam.\n\
-      There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
-      You open the envelope and start reading the letter inside..."
+There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
+You open the envelope and start reading the letter inside..."
       );
       keyPress();
       await keypress();
@@ -177,9 +177,7 @@ You take the red pill, you stay in Wonderland, and I show you how deep \
 the black and white rabbit hole goes..."
       );
 
-      let answer = await ask(
-        "\nDo you want to take the Blue Pill or the Red Pill? > "
-      );
+      let answer = await ask("\nDo you want to take the Blue Pill or the Red Pill? > ");
       answer = sani(answer);
       while (answer !== "blue" && answer !== "red") {
         answer = await ask(`Answer Blue or Red \n\
@@ -191,8 +189,7 @@ the black and white rabbit hole goes..."
         keyPress();
         await keypress();
         console.clear();
-        log(
-          "You wake up in your bed, you have no memory of what happened to you.\n\
+        log("You wake up in your bed, you have no memory of what happened to you.\n\
 You resume your mundane life - program writer for a respectable software company.\n\
 You have a social security number. You pay your taxes. And you help your landlady \
 carry out her garbage.\n\n\
@@ -200,24 +197,19 @@ As you head outside to go to work, you think to yourself:\n\
 You know that road. You know exactly where it ends.\n\
 And you somehow know that, things could have been different \
 this is not not where you want to be...\n\n\n\
-                         THE END"
-        );
+                         THE END");
         await keypress();
         process.exit();
       } else if (answer === "red") {
-        log(
-          "\nYou swallow the Red pill...\n\n\
+        log("\nYou swallow the Red pill...\n\n\
 but you also decide to keep the blue pill in your back pocket \
-in case you made the wrong decision and want to exit the game."
-        );
+in case you made the wrong decision and want to exit the game.");
         keyPress();
         await keypress();
         console.clear();
-        log(
-          "Remember ...\n\n\
+        log("Remember ...\n\n\
 ... all I'm offering is the truth, Nothing more.\n\n\
-Also be sure to remember this: S = 3"
-        );
+Also be sure to remember this: S = 3");
         playerInventory.push(" Blue Pill");
         keyPress();
         await keypress();
@@ -229,8 +221,7 @@ Also be sure to remember this: S = 3"
       keyPress();
       await keypress();
       console.clear();
-      log(
-        "You wake up in your bed, you have no memory of what happened to you.\n\
+      log("You wake up in your bed, you have no memory of what happened to you.\n\
 You resume your mundane life - program writer for a respectable software company.\n\
 You have a social security number. You pay your taxes. And you help your landlady \
 carry out her garbage.\n\n\
@@ -238,8 +229,7 @@ As you head outside to go to work, you think to yourself:\n\
 You know that road. You know exactly where it ends.\n\
 And you somehow know that, things could have been different \
 this is not not where you want to be...\n\n\n\
-                       THE END"
-      );
+                       THE END");
       await keypress();
       process.exit();
     } else if (this.name === "remote") {
@@ -334,10 +324,8 @@ You can now see the item that was in its hole: it's a golden key.`);
       } else {
         let i = playerInventory.indexOf(this.name2);
         playerInventory.splice(i, 1);
-        log(
-          "\nYou use the golden key on the door heading north...\n\
-It unlocks..."
-        );
+        log("\nYou use the golden key on the door heading north...\n\
+It unlocks...");
         doorLoop++;
         keyPress();
         await keypress();
@@ -711,71 +699,59 @@ async function game() {
   console.clear();
   if (locationCurrent === "room1" && room1Loop === 0) {
     room1Loop++;
-    log(
-      "You wake up to the sound of somebody knocking \
+    log("You wake up to the sound of somebody knocking \
 at the door, you're in a bright room with white walls \
 and your head hurts...\n\n\
 You don't remember how you fell asleep or how you got here...\n\n\
 You hear the sound of something falling on the ground: a package. \
 The person who knocked must have passed it through a slot in a door.\n\n\
 As you stand up, you startle a black and white rabbit who thumps and then hightails it through \
-a small hole in the wall going east."
-    );
+a small hole in the wall going east.");
     keyPress();
     await keypress();
   }
 
   if (locationCurrent === "room2" && room2Loop === 0) {
     room2Loop++;
-    log(
-      "As you enter a room, you can see the black and white rabbit \
+    log("As you enter a room, you can see the black and white rabbit \
 continuing to hop towards the east in panic.\n\n\
 The room is very odd: it's entirely empty except for a red sofa and an old \
-CRT TV on a small end table..."
-    );
+CRT TV on a small end table...");
     keyPress();
     await keypress();
   }
 
   if (locationCurrent === "room3" && room3Loop === 0) {
     room3Loop++;
-    log(
-      "You enter a tiny room, where you can see the black and white rabbit that was running away.\n\n\
-As you enter, it jumps into its rabbit hole, flattens its ears, and looks at you timidly."
-    );
+    log("You enter a tiny room, where you can see the black and white rabbit that was running away.\n\n\
+As you enter, it jumps into its rabbit hole, flattens its ears, and looks at you timidly.");
     keyPress();
     await keypress();
   }
 
   if (locationCurrent === "room4" && room4Loop === 0) {
     room4Loop++;
-    log(
-      "You enter a room that looks like an office room\n\
+    log("You enter a room that looks like an office room\n\
 In it, there's a desk with an ancient IBM desktop computer. \
-In the corner of the room, you also notice a safe."
-    );
+In the corner of the room, you also notice a safe.");
     keyPress();
     await keypress();
   }
 
   if (locationCurrent === "room5" && room5Loop === 0) {
     room5Loop++;
-    log(
-      "The room you enter is a dojo.\n\
+    log("The room you enter is a dojo.\n\
 You're surprised to see someone is here, standing in the center, \
 who seems to be a martial arts master.\n\
-He doesn't say anything - he's staring at you, silently."
-    );
+He doesn't say anything - he's staring at you, silently.");
     keyPress();
     await keypress();
   }
 
   if (locationCurrent === "room6" && room6Loop === 0) {
     room6Loop++;
-    log(
-      "Pass the door, you see a whole city entirely in ruins...\n\n\
-In the middle stands a person wearing a suit, he looks like an agent..."
-    );
+    log("Pass the door, you see a whole city entirely in ruins...\n\n\
+In the middle stands a person wearing a suit, he looks like an agent...");
     keyPress();
     await keypress();
   }
@@ -789,9 +765,7 @@ ${locationLookUp[locationCurrent].objectsInRoom}...\n`);
     log(`Items in the room that you can [take]:\
 ${locationLookUp[locationCurrent].roomInventory}\n`);
   }
-  log(
-    `Doors you can [go] through:${locationLookUp[locationCurrent].doors}\n`
-  );
+  log(`Doors you can [go] through:${locationLookUp[locationCurrent].doors}\n`);
   if (playerInventory.length !== 0) {
     log(`Objects you can [use] in your inventory:${playerInventory}\n`);
   }
