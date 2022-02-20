@@ -28,6 +28,7 @@ let room5Loop = 0;
 let room6Loop = 0;
 let checkLoop = 0;
 let doorLoop = 0;
+let carrotLoop = 0;
 let x = 2;
 let y = 2;
 let directions = [
@@ -80,6 +81,12 @@ class RoomObject {
       keyPress();
       await keypress();
       game();
+    } else if (this.name === "hole" && carrotLoop === 0) {
+      console.log("\nYou can see something shining inside, \
+but you can't reach it because the rabbit is in the way and rabbits are stubborn.")
+      keyPress();
+      await keypress();
+      game();
     } else if (this.name === "safe") {
       let codeInput = await ask("\nWhat code do you input? > ");
       if (codeInput === "3587") {
@@ -96,7 +103,7 @@ class RoomObject {
         game();
       }
     } else if (this.name === "agent") {
-      console.log(`Hello ${playerName}!!\n\n\
+      console.log(`\nHello ${playerName}!!\n\n\
 So good of you to join us...\n\n\
 Welcome to the desert of the REAL!\n\n\n\
 TO BE CONTINUED...\n\n\
@@ -123,9 +130,9 @@ class Item {
       playerInventory.splice(i, 1);
       console.clear();
       console.log(
-        "You open the package, inside you see an enveloppe that says: Welcome to the Xirtam.\n\
+        "You open the package, inside you see an envelope that says: Welcome to the Xirtam.\n\
       There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
-      You open the enveloppe and start reading the letter inside..."
+      You open the envelope and start reading the letter inside..."
       );
       keyPress();
       await keypress();
@@ -152,13 +159,13 @@ A prison ... for your mind."
       await keypress();
       console.clear();
       console.log(
-        "Unfortunately, no one can be simply told what the Xirtam is.\
+        "Unfortunately, no one can be simply told what the Xirtam is. \
 You have to see it for yourself.\n\n\
 This is your last chance. After this, there is no turning back.\n\n\
 You take the blue pill, the story ends, you wake up in your bed and believe \
 whatever you want to believe.\n\n\
 You take the red pill, you stay in Wonderland, and I show you how deep \
-the blak and white rabbit hole goes..."
+the black and white rabbit hole goes..."
       );
 
       let answer = await ask(
@@ -166,8 +173,9 @@ the blak and white rabbit hole goes..."
       );
       answer = sani(answer);
       while (answer !== "blue" && answer !== "red") {
-        confirm = await ask(`Answer Blue or Red \n\
+        answer = await ask(`Answer Blue or Red \n\
 > `);
+        answer = sani(answer)
       }
       if (answer === "blue") {
         console.log("\nYou swallow the Blue pill...");
@@ -190,8 +198,8 @@ this is not not where you want to be...\n\n\n\
       } else if (answer === "red") {
         console.log(
           "\nYou swallow the Red pill...\n\n\
-but you also decide to keep the blue pill in your back pocket\
-in case you made the wrong decision. (Exits the game)"
+but you also decide to keep the blue pill in your back pocket \
+in case you made the wrong decision and want to exit the game."
         );
         keyPress();
         await keypress();
@@ -274,17 +282,19 @@ At the end, you tell to yourself: "I know Kung Fu."`);
         console.log("You can't use that here...");
         setTimeout(game, 2000);
       } else {
+        let i = playerInventory.indexOf(this.name2);
+        playerInventory.splice(i, 1);
         console.clear();
         console.log(`You now know Kung-Fu and have the confidence \
-to take on the martial art master,\n\
+to take on the martial arts master,\n\
 He tries to push you away, but you block his arms. \
-Ensues a long fight of about 15 minutes, returning blows for blows.\n\
+There ensues a long fight of about 15 minutes, both of you returning blows for blows.\n\
 Then suddenly he blocks your final punch and says:\n\
-"Stop!... "Enough... apologies about all of that, I just needed to be sure that you were the One.\n\n\
-You do not truly know someone, until you fight them.\n\n\
-He hands you a carrot and says "here, take this, I have a feeling you will need it."\n\n\
+"Stop!... Enough... apologies about all of that, I just needed to be sure that you were the One.\n\n\
+You do not truly know someone, until you fight them."\n\n\
+He hands you a carrot and says, "Here, take this. I have a feeling you will need it."\n\n\
 "Why on earth did he give me a carrot?" you think to yourself.\n\n\
-The martial art master has resumed his position and says nothing...`);
+The martial arts master has resumed his position and says nothing...`);
         playerInventory.push(carrot.name2);
         keyPress();
         await keypress();
@@ -295,11 +305,14 @@ The martial art master has resumed his position and says nothing...`);
         console.log("You can't use that here...");
         setTimeout(game, 2000);
       } else {
+        carrotLoop++
+        let i = playerInventory.indexOf(this.name2);
+        playerInventory.splice(i, 1);
         console.clear();
         console.log(`You hand the carrot to the black and white rabbit,\n\
-It inspects it carefully then suddenly its eyes go wide, it raises its ears, bites into the carrot \
+The rabbit inspects it carefully. Then suddenly its eyes go wide! It raises its ears, bites into the carrot, \
 takes it, and runs away!\n\n\
-You can now see the item that was in its hole, it's a golden key.`);
+You can now see the item that was in its hole: it's a golden key.`);
         locationLookUp[locationCurrent].roomInventory.push(key.name2);
         keyPress();
         await keypress();
@@ -310,6 +323,8 @@ You can now see the item that was in its hole, it's a golden key.`);
         console.log("You can't use that here...");
         setTimeout(game, 2000);
       } else {
+        let i = playerInventory.indexOf(this.name2);
+        playerInventory.splice(i, 1);
         console.log(
           "\nYou use the golden key on the door heading north...\n\
 It unlocks..."
@@ -352,25 +367,24 @@ Inside you see a remote control."
 
 let rabbit = new RoomObject(
   "rabbit",
-  "It's a black and white rabbit. It's very cute. It's looking at you."
+  "It's a fluffy black and white rabbit. It's very cute. It's looking at you with big wondering eyes."
 );
 
 let hole = new RoomObject(
   "hole",
-  "It's the rabbit's hole, you can see something shinning inside, \
-but you can't reach it because the rabbit is in the way"
+  "It's the rabbit's hole."
 );
 
 let desk = new RoomObject(
   "desk",
-  "It's an old fashion, but sturdy desk. You decide to take a look in the drawer. \
+  "It's an old fashioned, but sturdy desk. You decide to take a look in the drawer. \
 You see a note inside.\n\
 The note says E = 7"
 );
 
 let computer = new RoomObject(
   "computer",
-  "It's one of those older computer.\n\n\
+  "It's one of those older computers.\n\n\
 On the screen you see it saying: Please insert disk in drive A:"
 );
 
@@ -390,7 +404,7 @@ slams you to the ground..."
 
 let agent = new RoomObject(
   "agent",
-  "You get closer to who looks to be an agent, he starts talking..."
+  "You get closer to the agent, he starts talking..."
 );
 
 let objectLookUp = {
@@ -468,7 +482,7 @@ let room4 = new Location(
 let room5 = new Location(
   "the fifth room",
   "a dojo.",
-  [" a martial art master"],
+  [" a martial arts master"],
   [" a door to the east", " a door to the north"],
   []
 );
@@ -556,9 +570,14 @@ function restart() {
   room4Loop = 0;
   room5Loop = 0;
   room6Loop = 0;
-  playerName = "test";
-  mainMenu();
+  doorLoop = 0
+  checkLoop = 0;
+  x = 2;
+  y = 2;
+  playerName = "Edna";
+  game();
 }
+
 async function mainMenu() {
   console.clear();
   console.log(`\r\n\              __  __      \r\n\
@@ -590,13 +609,13 @@ async function tutorial(){
   console.clear()
   console.log(`Thank you for trying my game. Here's a quick guide on how to play.\n\n\
 There are 4 main actions you can write down in each room: "go", "inspect", "take" and "use".\n\n\
-"go" - lets you move to another room - north, east, south, west "\n\
+"go" - lets you move to another room - north, east, south, west.\n\
 Example: "go east" or "go door south-west"\n\n\
 "inspect" - lets you take a closer look at objects, like furniture for instance, around the room.\n\
 Example: "inspect mirror" or "inspect the small table"\n\n\
 "take" - lets you pick up items from the room's inventory and place it in your own inventory.\n\
 Example: "take key"\n\n\
-"use" - if (and only if!) an item is in your inventory, you can then "use" it\n\
+"use" - if (and only if!) an item is in your inventory, you can then "use" it.\n\
 Example: "use key"\n\n\
 I hope you enjoy your playthrough!\n\n\
 > Press any key to return to the main menu...`)
@@ -686,9 +705,9 @@ async function game() {
 at the door, you're in a bright room with white walls \
 and your head hurts...\n\
 You don't remember how you fell asleep or how you got here...\n\
-You hear the sound of something falling on the ground, \
-the person who knocked passed a package through a slot in a door\n\
-As you stand up, you startle a black and white rabbit that runs through\
+You hear the sound of something falling on the ground: a package. \
+The person who knocked must have passed it through a slot in a door.\n\
+As you stand up, you startle a black and white rabbit who thumps and then hightails it through \
 a small hole in the wall going east."
     );
     keyPress();
@@ -699,9 +718,9 @@ a small hole in the wall going east."
     room2Loop++;
     console.log(
       "As you enter a room, you can see the black and white rabbit \
-continuing to hop towards the east\n\
-The room is very odd, it's entirely empty except for a red sofa and an old \
-CRT TV on a small end table...\n"
+continuing to hop towards the east in panic.\n\n\
+The room is very odd: it's entirely empty except for a red sofa and an old \
+CRT TV on a small end table..."
     );
     keyPress();
     await keypress();
@@ -711,7 +730,7 @@ CRT TV on a small end table...\n"
     room3Loop++;
     console.log(
       "You enter a tiny room, where you can see the black and white rabbit that was running away.\n\
-As you enter, it jumps into his rabbit hole and looks at you timidly.\n"
+As you enter, it jumps into its rabbit hole, flattens its ears, and looks at you timidly."
     );
     keyPress();
     await keypress();
@@ -722,7 +741,7 @@ As you enter, it jumps into his rabbit hole and looks at you timidly.\n"
     console.log(
       "You enter a room that looks like an office room\n\
 In it, there's a desk with an ancient IBM desktop computer. \
-In the corner of the room, you also notice a safe.\n"
+In the corner of the room, you also notice a safe."
     );
     keyPress();
     await keypress();
@@ -731,19 +750,20 @@ In the corner of the room, you also notice a safe.\n"
   if (locationCurrent === "room5" && room5Loop === 0) {
     room5Loop++;
     console.log(
-      "The room your enter is a dojo\n\
-You're surprised to see someone is here. What seems to be a martial art expert stands in the center.\n\
-He doesn't say anything - he's staring at you, silently.\n"
+      "The room you enter is a dojo.\n\
+You're surprised to see someone is here, standing in the center, \
+who seems to be a martial arts master.\n\
+He doesn't say anything - he's staring at you, silently."
     );
     keyPress();
     await keypress();
   }
 
-  if (locationCurrent === "room6" && room5Loop === 0) {
+  if (locationCurrent === "room6" && room6Loop === 0) {
     room6Loop++;
     console.log(
       "Pass the door, you see a whole city entirely in ruins...\n\n\
-In the middle stands a person wearing a suit, he looks like agent..."
+In the middle stands a person wearing a suit, he looks like an agent..."
     );
     keyPress();
     await keypress();
@@ -854,11 +874,13 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     if (itemList.some((v) => splitAnswer.toString().includes(v))) {
       for (let word of splitAnswer) {
         if (itemList.includes(word)) {
-          if (
-            itemLookUp[word].name &&
-            playerInventory.includes(itemLookUp[word].name2)
-          ) {
-            itemLookUp[word].use();
+          if (playerInventory.includes(itemLookUp[word].name2)){
+            if (itemLookUp[word].name) {
+                itemLookUp[word].use();
+            } else {
+              notSure();
+              setTimeout(game, 2000);    
+            }
           } else {
             notSure();
             setTimeout(game, 2000);
@@ -873,11 +895,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     if (itemList.some((v) => splitAnswer.toString().includes(v))) {
       for (let word of splitAnswer) {
         if (itemList.includes(word)) {
-          if (
-            locationLookUp[locationCurrent].roomInventory.includes(
-              itemLookUp[word].name2
-            )
-          ) {
+          if (locationLookUp[locationCurrent].roomInventory.includes(itemLookUp[word].name2)) {
             if (itemLookUp[word].name) {
               console.log(`\nYou pick up the${itemLookUp[word].name2}`);
               playerInventory.push(itemLookUp[word].name2);
@@ -907,5 +925,5 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
 }
 
 // game();
-
+// restart()
 mainMenu();
