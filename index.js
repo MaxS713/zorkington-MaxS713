@@ -79,26 +79,91 @@ class Item {
     console.clear()
     console.log (`${this.used}`)
     if (this.name === "package"){
-      let answer = await ask("Do you want to take the Blue Pill or the Red Pill?\n\
-> ")
+      let i = playerInventory.indexOf(this.name2);
+      playerInventory.splice(i, 1);
+      key()
+      await keypress()
+      console.clear()
+      console.log(`Hello ${playerName},\n\n\
+Let me tell you why you're here. You know something. \
+What you know, you can't explain. But you feel it. You felt it your entire life: \
+Something's wrong with the world. You don't know what, but it's there. \
+Like a splinter in your mind, driving you mad.\n\n\
+The Xirtam? Do you want to know what it is?`)
+      key()
+      await keypress()
+      console.clear()
+      console.log("The Xirtam is everywhere. It is all around us. Even now, in this very room. \
+You can see it when you look out your window or when you turn on your television. \
+You can feel it when you go to work, when you go to church, when you pay your taxes. \
+It is the world that has been, pulled over your eyes to blind you from the truth. \
+The truth that you are a slave. Like everyone else, you were born into bondage... \
+Born into a prison that you cannot smell or taste or touch.\n\n\
+A prison ... for your mind.")
+      key()
+      await keypress()
+      console.clear()
+      console.log("Unfortunately, no one can be simply told what the Xirtam is.\
+You have to see it for yourself.\n\n\
+This is your last chance. After this, there is no turning back.\n\n\
+You take the blue pill, the story ends, you wake up in your bed and believe \
+whatever you want to believe.\n\n\
+You take the red pill, you stay in Wonderland, and I show you how deep \
+the blak and white rabbit hole goes...")
+
+      let answer = await ask("\nDo you want to take the Blue Pill or the Red Pill? > ")
       answer = sani(answer)
       while (answer !== "blue" && answer !== "red") {
         confirm = await ask(`Answer Blue or Red \n\
 > `);
       }
       if (answer === "blue") {
+        console.log("")
         bluePill.use()
+        key()
+        await keypress()
+        console.log("You wake up in your bed, you have no memory of what happened to you.\n\
+        You resume your mundane life - program writer for a respectable software company.\n\
+        You have a social security number. You pay your taxes. And you help your landlady \
+        carry out her garbage.\n\n\
+        As you head outside to go to work, you think to yourself:\n\
+        You know that road. You know exactly where it ends.\n\
+        And you somehow know that, things could have been different \
+        this is not not where you want to be...\n\n\n\
+                         THE END")
+        await keypress()
+        process.exit()
       } else if (answer ==="red"){
-        console.log("Red Pill answer");
+        console.log("\nYou swallow the Red pill...");
+        key()
+        await keypress()
+        console.clear()
+        console.log("Remember ...\n\n\
+... all I'm offering is the truth, Nothing more.")
         playerInventory.push(" Blue Pill")
+        key()
         await keypress()
         game()
       }
     } else if (this.name === "pill"){
+      console.log("")
+      bluePill.use()
+      key()
+      await keypress()
+      console.log("You wake up in your bed, you have no memory of what happened to you.\n\
+      You resume your mundane life - program writer for a respectable software company.\n\
+      You have a social security number. You pay your taxes. And you help your landlady \
+      carry out her garbage.\n\n\
+      As you head outside to go to work, you think to yourself:\n\
+      You know that road. You know exactly where it ends.\n\
+      And you somehow know that, things could have been different \
+      this is not not where you want to be...\n\n\n\
+                       THE END")
       await keypress()
       process.exit()
 
-      
+
+
     } else {
       key()
       await keypress()
@@ -109,12 +174,14 @@ class Item {
 
 let mirror = new RoomObject(
   "mirror",
-  "You look into the mirror",
+  "You look into the mirror... You look different, like a projection of your ideal self. \
+You're wearing a long black robe and your hair has changed.",
 )
 
 let sofa  = new RoomObject(
   "red sofa",
-  "This sofa looks comfy, you sit in it and relax. Then you realize you might have more important things to do!"
+  "This sofa looks comfy, you sit in it and relax. \
+Then you realize you might have more important things to do!"
 )
 
 let tv = new RoomObject(
@@ -135,14 +202,14 @@ let rabbit = new RoomObject(
 
 let hole = new RoomObject(
   "hole",
-  "It's the rabbit hole, you can see something shinning \
-in it but you can't reach it because the rabbit is in the way"
+  "It's the rabbit's hole, you can see something shinning inside, \
+but you can't reach it because the rabbit is in the way"
 )
 
 let desk = new RoomObject(
   "desk",
   "It's an old fashion, but sturdy desk. You decide to take a look in the drawer. \
-You see a note inside."
+You see a note inside. The note says E = 42"
 )
 
 let computer = new RoomObject(
@@ -184,50 +251,52 @@ let objectLookUp = {
 
 let package = new Item(
   "package",
-  "Brown Package",
-  "BROWN PACKAGE",
+  " Brown Package",
+  "You open the package, inside you see an enveloppe that says: Welcome to the Xirtam.\n\
+There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
+You open the enveloppe and start reading the letter inside..."
 )
 
 let remote = new Item(
   "remote",
-  "Remote Control",
+  " Remote Control",
   "REMOTE",
 )
 
-let bluePill = new Item(
+let pill = new Item(
   "pill",
-  "Blue Pill",
-  "BLUE PILL ANSWER"
+  " Blue Pill",
+  "You swallow the Blue pill..."
 )
 
 let disk = new Item(
   "disk",
-  "Floppy Disk",
+  " Floppy Disk",
   "Floppy DISK ACTION",
 )
 
 let carrot = new Item(
   "carrot",
-  "Carrot",
+  " Carrot",
   "CARROT ACTION",
 )
 
 let gun = new Item(
   "gun",
-  "Gun",
+  " Gun",
   "Gun action",
 )
 
 let kungFu = new Item(
   "kung",
-  "Kung-Fu Skills",
+  " Kung-Fu Skills",
   "Kung-Fu ACTION",
 )
 
 let itemLookUp = {
   package,
   remote,
-  bluePill,
+  pill,
   disk,
   carrot,
   gun,
@@ -240,7 +309,7 @@ let room1 = new Location(
   "a room with bright white walls.",
   [" a mirror on the wall"],
   [" a door to the east", " a door to the south", " a door to the north"],
-  ["Brown Package"],
+  [" Brown Package"],
 );
 
 let room2 = new Location(
@@ -317,7 +386,6 @@ function capitalize(string) {
   return string;
 }
 
-
 //Function to 'sanitize' a string
 //by lowercasing everything and taking away all spaces
 function sani(inputToSani) {
@@ -345,7 +413,7 @@ function key(){
 }
 
 function notSure(){
-  console.log("Not sure what you're trying to say")
+  console.log("\nNot sure what you're trying to say")
 }
 
 // function restart() {
@@ -506,19 +574,22 @@ ${locationLookUp[locationCurrent].description}\n`);
   checkLoop = 0;
 
   if (splitAnswer.includes("inspect")){
+
     for (let word of splitAnswer){
+      
       if (objectLookUp[word]){
-        if (objectLookUp[word].name){
+        console.log(objectLookUp[word].name)
+        console.log(locationLookUp[locationCurrent].objectsInRoom)
+        if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[word].name)){
           console.clear()
           objectLookUp[word].describe()
         } else {
           notSure()
-          key()
-          await keypress()
-          game()
+          setTimeout(game, 2000);
         }
       }
     }     
+
   } else if (splitAnswer.includes("go")|| splitAnswer.includes("move")) {
 
     for (let word of splitAnswer){
@@ -544,34 +615,25 @@ ${locationLookUp[locationCurrent].description}\n`);
           }
 
           console.log(`\nYou're going through the door heading ${sani(directionHeaded)}!`);
-          setTimeout(game, 3000);
+          setTimeout(game, 2000);
 
         } else if (checkLoop === 0) {
-          console.log("You can't go in that direction...");
-          setTimeout(game, 2500);
+          console.log("\nYou can't go in that direction...");
+          setTimeout(game, 2000);
         } else {
           notSure()
-          setTimeout(game, 2500);
+          setTimeout(game, 2000);
         }
       }
     }
   } else if (splitAnswer.includes("use")){
     for (let word of splitAnswer){
       if(itemLookUp[word]){
-        if (itemLookUp[word].name){
-          itemLookUp[word].use()
-          if (playerInventory.includes(itemLookUp[word].name2)){
-            let i = playerInventory.indexOf(itemLookUp[word].name2);
-            playerInventory.splice(i, 1);
-          } else if (locationLookUp[locationCurrent].roomInventory.includes(itemLookUp[word].name2)){
-            let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
-            locationLookUp[locationCurrent].roomInventory.splice(i, 1);
-          }
+        if (itemLookUp[word].name && playerInventory.includes(itemLookUp[word].name2)){
+          itemLookUp[word].use()          
         } else {
           notSure()
-          key()
-          await keypress()
-          game()
+          setTimeout(game, 2000);
         }
       }
     }
@@ -583,19 +645,16 @@ ${locationLookUp[locationCurrent].description}\n`);
           playerInventory.push(itemLookUp[word].name2)
           let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
           locationLookUp[locationCurrent].roomInventory.splice(i, 1);
-          await keypress()
-          game()
+          setTimeout (game, 2000)
         } else {
           notSure()
-          key()
-          await keypress()
-          game()
+          setTimeout(game, 2000);
         }
       }
     }
   } else {
     notSure()
-    setTimeout(game, 2500);
+    setTimeout(game, 2000);
   }
 }
 
