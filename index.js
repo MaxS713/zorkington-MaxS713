@@ -38,7 +38,29 @@ let directions = [
   "southeast",
   "northeast",
   "northwest",
-];
+  ];
+let objectList = [
+  "mirror",
+  "sofa",
+  "tv",
+  "table",
+  "rabbit",
+  "hole",
+  "desk",
+  "computer",
+  "safe",
+  "master",
+  "agent",
+  ];
+let itemList = [
+  "package",
+  "remote",
+  "pill",
+  "disk",
+  "carrot",
+  "gun",
+  "kung",
+  ]
 let playerInventory = []
 let playerName = "test";
 
@@ -63,24 +85,29 @@ class RoomObject {
     if (this.name === "table"){
       locationLookUp[locationCurrent].roomInventory.push(" Remote Control")
     }
+    if (this.name === "safe"){
+      
+    }
     key()
     await keypress()
     game()
   }
 }
 class Item {
-  constructor(name, name2, used) {
+  constructor(name, name2,) {
     this.name = name;
     this.name2 = name2;
-    this.used = used;
   }
 
   async use(){
-    console.clear()
-    console.log (`${this.used}`)
+
     if (this.name === "package"){
       let i = playerInventory.indexOf(this.name2);
       playerInventory.splice(i, 1);
+      console.clear()
+      console.log("You open the package, inside you see an enveloppe that says: Welcome to the Xirtam.\n\
+      There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
+      You open the enveloppe and start reading the letter inside...")
       key()
       await keypress()
       console.clear()
@@ -118,18 +145,18 @@ the blak and white rabbit hole goes...")
 > `);
       }
       if (answer === "blue") {
-        console.log("")
-        bluePill.use()
+        console.log("\nYou swallow the Blue pill...")
         key()
         await keypress()
+        console.clear()
         console.log("You wake up in your bed, you have no memory of what happened to you.\n\
-        You resume your mundane life - program writer for a respectable software company.\n\
-        You have a social security number. You pay your taxes. And you help your landlady \
-        carry out her garbage.\n\n\
-        As you head outside to go to work, you think to yourself:\n\
-        You know that road. You know exactly where it ends.\n\
-        And you somehow know that, things could have been different \
-        this is not not where you want to be...\n\n\n\
+You resume your mundane life - program writer for a respectable software company.\n\
+You have a social security number. You pay your taxes. And you help your landlady \
+carry out her garbage.\n\n\
+As you head outside to go to work, you think to yourself:\n\
+You know that road. You know exactly where it ends.\n\
+And you somehow know that, things could have been different \
+this is not not where you want to be...\n\n\n\
                          THE END")
         await keypress()
         process.exit()
@@ -139,15 +166,16 @@ the blak and white rabbit hole goes...")
         await keypress()
         console.clear()
         console.log("Remember ...\n\n\
-... all I'm offering is the truth, Nothing more.")
+... all I'm offering is the truth, Nothing more.\n\n\
+Also be sure to remember this: S = 3")
         playerInventory.push(" Blue Pill")
         key()
         await keypress()
         game()
       }
     } else if (this.name === "pill"){
-      console.log("")
-      bluePill.use()
+      console.clear()
+      console.log("\nYou swallow the Blue pill...")
       key()
       await keypress()
       console.log("You wake up in your bed, you have no memory of what happened to you.\n\
@@ -161,9 +189,32 @@ the blak and white rabbit hole goes...")
                        THE END")
       await keypress()
       process.exit()
-
-
-
+    } else if (this.name ==="remote"){
+      if(locationCurrent !== "room2"){
+        console.log("You can't use that here...")    
+        setTimeout(game, 2000)
+      } else {
+        console.clear()
+        console.log(`You push the power button of the remote and the TV turns on \
+and a tape starts playing.\n\
+A person dressed in leather and wearing sunglasses appears and start talking...\n\n\
+Hello ${playerName}, I've been expecting you.\n\
+I am Suehprom. It's an honor to meet you.\n\
+Welcome to the Construct. It's a loading program. \
+You're inside a computer program, your clothes are different, your hair has changed. \
+None of this is real. Do you think that's air you're breathing now?\n\
+What is "real"? If we're talking about what you can feel, \
+what you can smell, taste and see. Then "real" is simply \
+electrical signals interpreted by your brain.\n\n\
+The world as it was at the beginning of the 21th century \
+exists now only as part of a neural-interactive simulation that we call the Xirtam.\n\
+You've been living in a dream world, ${playerName}.\n\
+Come join us and learn the truth. \n\n\
+To do this, all you need to know to know right now is A = 5, it will make sense soon…`)
+      key()
+      await keypress()
+      game()
+      }  
     } else {
       key()
       await keypress()
@@ -171,6 +222,7 @@ the blak and white rabbit hole goes...")
     }
   }
 }
+
 
 let mirror = new RoomObject(
   "mirror",
@@ -209,7 +261,8 @@ but you can't reach it because the rabbit is in the way"
 let desk = new RoomObject(
   "desk",
   "It's an old fashion, but sturdy desk. You decide to take a look in the drawer. \
-You see a note inside. The note says E = 42"
+You see a note inside.\n\
+The note says E = 42"
 )
 
 let computer = new RoomObject(
@@ -252,45 +305,36 @@ let objectLookUp = {
 let package = new Item(
   "package",
   " Brown Package",
-  "You open the package, inside you see an enveloppe that says: Welcome to the Xirtam.\n\
-There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
-You open the enveloppe and start reading the letter inside..."
 )
 
 let remote = new Item(
   "remote",
   " Remote Control",
-  "REMOTE",
 )
 
 let pill = new Item(
   "pill",
   " Blue Pill",
-  "You swallow the Blue pill..."
 )
 
 let disk = new Item(
   "disk",
   " Floppy Disk",
-  "Floppy DISK ACTION",
 )
 
 let carrot = new Item(
   "carrot",
   " Carrot",
-  "CARROT ACTION",
 )
 
 let gun = new Item(
   "gun",
   " Gun",
-  "Gun action",
 )
 
-let kungFu = new Item(
+let kung = new Item(
   "kung",
   " Kung-Fu Skills",
-  "Kung-Fu ACTION",
 )
 
 let itemLookUp = {
@@ -300,7 +344,7 @@ let itemLookUp = {
   disk,
   carrot,
   gun,
-  kungFu,
+  kung,
 }
 
 //Creating the locations
@@ -389,7 +433,7 @@ function capitalize(string) {
 //Function to 'sanitize' a string
 //by lowercasing everything and taking away all spaces
 function sani(inputToSani) {
-  return inputToSani.toLowerCase().replaceAll(" ", "").replaceAll("-", "");
+  return inputToSani.toLowerCase().replaceAll(" ", "").replaceAll("-", "").replaceAll(".","");
 }
 
 function sani2(inputToSani2) {
@@ -413,7 +457,7 @@ function key(){
 }
 
 function notSure(){
-  console.log("\nNot sure what you're trying to say")
+  console.log("\nNot sure what you're trying to do...")
 }
 
 // function restart() {
@@ -574,84 +618,100 @@ ${locationLookUp[locationCurrent].description}\n`);
   checkLoop = 0;
 
   if (splitAnswer.includes("inspect")){
-
-    for (let word of splitAnswer){
-      
-      if (objectLookUp[word]){
-        console.log(objectLookUp[word].name)
-        console.log(locationLookUp[locationCurrent].objectsInRoom)
-        if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[word].name)){
-          console.clear()
-          objectLookUp[word].describe()
-        } else {
-          notSure()
-          setTimeout(game, 2000);
+    if (objectList.some(v => splitAnswer.toString().includes(v))) {
+      for (let word of splitAnswer){
+        if (objectList.includes(word)){
+          if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[word].name)){
+            console.clear()
+            objectLookUp[word].describe()
+            break
+          } else {
+            notSure()
+            setTimeout(game, 2000);
+          }
         }
-      }
-    }     
-
+      }  
+    } else {
+        notSure()
+        setTimeout(game, 2000);
+    }       
   } else if (splitAnswer.includes("go")|| splitAnswer.includes("move")) {
-
-    for (let word of splitAnswer){
-      if (directions.includes(word)){
-        if (locationStates[locationCurrent].includes(word)){
-          checkLoop++;
-          directionHeaded = "";
-          if (answer.includes("east")) {
-            directionHeaded = directionHeaded + "east";
-            x++;
+    if (directions.some(v => splitAnswer.toString().includes(v))) {
+      for (let word of splitAnswer){
+        if (directions.includes(word)){
+          if (locationStates[locationCurrent].includes(word)){
+            checkLoop++;
+            directionHeaded = "";
+            if (answer.includes("east")) {
+              directionHeaded = directionHeaded + "east";
+              x++;
+            }
+            if (answer.includes("west")) {
+              directionHeaded = directionHeaded + "west";
+              x--;
+            }
+            if (answer.includes("south")) {
+              directionHeaded = "south" + directionHeaded;
+              y--;
+            }
+            if (answer.includes("north")) {
+              directionHeaded = "north" + directionHeaded;
+              y++;
+            }
+            console.log(`\nYou're going through the door heading ${sani(directionHeaded)}!`);
+            setTimeout(game, 2000);
+            break
+          } else if (checkLoop === 0) {
+            console.log("\nYou can't go in that direction...");
+            setTimeout(game, 2000);
+            break
+          } else {
+            notSure()
+            setTimeout(game, 2000);
+            break
           }
-          if (answer.includes("west")) {
-            directionHeaded = directionHeaded + "west";
-            x--;
-          }
-          if (answer.includes("south")) {
-            directionHeaded = "south" + directionHeaded;
-            y--;
-          }
-          if (answer.includes("north")) {
-            directionHeaded = "north" + directionHeaded;
-            y++;
-          }
-
-          console.log(`\nYou're going through the door heading ${sani(directionHeaded)}!`);
-          setTimeout(game, 2000);
-
-        } else if (checkLoop === 0) {
-          console.log("\nYou can't go in that direction...");
-          setTimeout(game, 2000);
-        } else {
-          notSure()
-          setTimeout(game, 2000);
         }
       }
+    } else {
+      notSure()
+      setTimeout(game, 2000);
     }
   } else if (splitAnswer.includes("use")){
-    for (let word of splitAnswer){
-      if(itemLookUp[word]){
-        if (itemLookUp[word].name && playerInventory.includes(itemLookUp[word].name2)){
-          itemLookUp[word].use()          
-        } else {
-          notSure()
-          setTimeout(game, 2000);
+    if (itemList.some(v => splitAnswer.toString().includes(v))) {
+      for (let word of splitAnswer){
+        if(itemList.includes(word)){
+          if (itemLookUp[word].name && playerInventory.includes(itemLookUp[word].name2)){
+            itemLookUp[word].use()          
+          } else {
+            notSure()
+            setTimeout(game, 2000);
+          }
         }
       }
-    }
+    } else {
+      notSure()
+      setTimeout(game, 2000);
+    } 
   } else if (splitAnswer.includes("take")){
-    for (let word of splitAnswer){
-      if(itemLookUp[word]){
-        if (itemLookUp[word].name){
-          console.log(`\nYou pick up the${itemLookUp[word].name2}`)
-          playerInventory.push(itemLookUp[word].name2)
-          let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
-          locationLookUp[locationCurrent].roomInventory.splice(i, 1);
-          setTimeout (game, 2000)
-        } else {
-          notSure()
-          setTimeout(game, 2000);
+    if (itemList.some(v => splitAnswer.toString().includes(v))) {
+      for (let word of splitAnswer){
+        if(itemList.includes(word)){
+          if (itemLookUp[word].name){
+            console.log(`\nYou pick up the${itemLookUp[word].name2}`)
+            playerInventory.push(itemLookUp[word].name2)
+            let i = locationLookUp[locationCurrent].roomInventory.indexOf(itemLookUp[word].name2);
+            locationLookUp[locationCurrent].roomInventory.splice(i, 1);
+            setTimeout (game, 2000)
+          } else {
+            notSure()
+            setTimeout(game, 2000);
+          }
         }
       }
-    }
+    } else {
+      notSure()
+      setTimeout(game, 2000);
+    } 
   } else {
     notSure()
     setTimeout(game, 2000);
