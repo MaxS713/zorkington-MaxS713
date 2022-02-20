@@ -112,13 +112,14 @@ but you can't reach it because the rabbit is in the way and rabbits are stubborn
         game();
       }
     } else if (this.name === "agent") {
-      log(`\nHello ${playerName}!!\n\n\
+      log(`\n\n"Hello ${playerName}!!\n\n\
 So good of you to join us...\n\n\
-Welcome to the desert of the REAL!\n\n\n\
+Welcome to the desert of the REAL!"\n\n\n\
 TO BE CONTINUED...\n\n\
 Thanks for playing!\n\n\
 > Press any key to exit.`);
       await keypress();
+      console.clear();
       process.exit();
     } else {
       keyPress();
@@ -138,11 +139,10 @@ class Item {
       let i = playerInventory.indexOf(this.name2);
       playerInventory.splice(i, 1);
       console.clear();
-      log(
-        "You open the package, inside you see an envelope that says: Welcome to the Xirtam.\n\
+      log(`You open the package, inside you see an envelope that says:\n\n\
+      "Welcome to the Xirtam."\n\n\
 There's a small box, you open it and find two pills, a red pill and a blue pill.\n\
-You open the envelope and start reading the letter inside..."
-      );
+You open the envelope and start reading the letter inside...`);
       keyPress();
       await keypress();
       console.clear();
@@ -199,16 +199,18 @@ And you somehow know that, things could have been different \
 this is not not where you want to be...\n\n\n\
                          THE END");
         await keypress();
+        console.clear();
         process.exit();
       } else if (answer === "red") {
+        console.clear()
         log("\nYou swallow the Red pill...\n\n\
-but you also decide to keep the blue pill in your back pocket \
+(but you also decide to keep the blue pill in your back pocket \
 in case you made the wrong decision and want to exit the game.");
         keyPress();
         await keypress();
         console.clear();
         log("Remember ...\n\n\
-... all I'm offering is the truth, Nothing more.\n\n\
+... all I'm offering is the truth, nothing more.\n\n\
 Also be sure to remember this: S = 3");
         playerInventory.push(" Blue Pill");
         keyPress();
@@ -231,6 +233,7 @@ And you somehow know that, things could have been different \
 this is not not where you want to be...\n\n\n\
                        THE END");
       await keypress();
+      console.clear();
       process.exit();
     } else if (this.name === "remote") {
       if (locationCurrent !== "room2") {
@@ -239,13 +242,13 @@ this is not not where you want to be...\n\n\n\
       } else {
         console.clear();
         log(`You push the power button of the remote and the TV turns on \
-and a tape starts playing.\n\
+and a tape starts playing.\n\n\
 A person dressed in leather and wearing sunglasses appears and start talking...\n\n\
 Hello ${playerName}, I've been expecting you.\n\
 I am Suehprom. It's an honor to meet you.\n\n\
 Welcome to the Construct. It's a loading program. \
 You're inside a computer program, your clothes are different, your hair has changed. \
-None of this is real. Do you think that's air you're breathing now?\n\
+None of this is real. Do you think that's air you're breathing now?\n\n\
 What is "real"? If we're talking about what you can feel, \
 what you can smell, taste and see. Then "real" is simply \
 electrical signals interpreted by your brain.\n\n\
@@ -260,7 +263,7 @@ To do this, all you need to know to know right now is A = 5, it will make sense 
       }
     } else if (this.name === "disk") {
       if (locationCurrent !== "room4") {
-        log("You can't use that here...");
+        log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         let i = playerInventory.indexOf(this.name2);
@@ -268,7 +271,7 @@ To do this, all you need to know to know right now is A = 5, it will make sense 
         console.clear();
         log(`You insert the disk into the computer...\n\n\
 A folder called "kung-fu" appears, you open it, a whole bunch of videos \
-about kung fu start playing... \n\
+about kung fu start playing...\n\n\
 You sit there for about 2 hours.\n\n\
 At the end, you tell to yourself: "I know Kung Fu."`);
         playerInventory.push(kung.name2);
@@ -287,7 +290,7 @@ At the end, you tell to yourself: "I know Kung Fu."`);
         log(`You now know Kung-Fu and have the confidence \
 to take on the martial arts master,\n\
 He tries to push you away, but you block his arms. \
-There ensues a long fight of about 15 minutes, both of you returning blows for blows.\n\
+There ensues a long fight of about 15 minutes, both of you returning blows for blows.\n\n\
 Then suddenly he blocks your final punch and says:\n\
 "Stop!... Enough... apologies about all of that, I just needed to be sure that you were the One.\n\n\
 You do not truly know someone, until you fight them."\n\n\
@@ -740,9 +743,9 @@ In the corner of the room, you also notice a safe.");
 
   if (locationCurrent === "room5" && room5Loop === 0) {
     room5Loop++;
-    log("The room you enter is a dojo.\n\
+    log("The room you enter is a dojo.\n\n\
 You're surprised to see someone is here, standing in the center, \
-who seems to be a martial arts master.\n\
+who seems to be a martial arts master.\n\n\
 He doesn't say anything - he's staring at you, silently.");
     keyPress();
     await keypress();
@@ -760,7 +763,7 @@ In the middle stands a person wearing a suit, he looks like an agent...");
   log(`You are in the ${locationLookUp[locationCurrent].name}, \
 ${locationLookUp[locationCurrent].description}\n`);
   log(`Objects around you that you can [inspect]:\
-${locationLookUp[locationCurrent].objectsInRoom}...\n`);
+${locationLookUp[locationCurrent].objectsInRoom}.\n`);
   if (locationLookUp[locationCurrent].roomInventory.length !== 0) {
     log(`Items in the room that you can [take]:\
 ${locationLookUp[locationCurrent].roomInventory}\n`);
@@ -794,6 +797,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
           } else {
             notSure();
             setTimeout(game, 2000);
+            break
           }
         }
       }
@@ -855,23 +859,26 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     if (itemList.some((v) => splitAnswer.toString().includes(v))) {
       for (let word of splitAnswer) {
         if (itemList.includes(word)) {
-          if (playerInventory.includes(itemLookUp[word].name2)){
-            if (itemLookUp[word].name) {
-                itemLookUp[word].use();
-            } else {
-              notSure();
-              setTimeout(game, 2000);    
-            }
-          } else {
-            notSure();
-            setTimeout(game, 2000);
-          }
+          word1 = word
         }
       }
-    } else {
-      notSure();
-      setTimeout(game, 2000);
-    }
+      if(itemList.includes(word1)){
+        if (playerInventory.includes(itemLookUp[word1].name2)){
+          if (itemLookUp[word1].name) {
+            itemLookUp[word1].use();
+          } else {
+            notSure();
+            setTimeout(game, 2000);  
+          }
+        } else {
+          notSure();
+          setTimeout(game, 2000);
+        }
+      } else {
+        notSure();
+        setTimeout(game, 2000);
+      }
+    }  
   } else if (splitAnswer.includes("take")) {
     if (itemList.some((v) => splitAnswer.toString().includes(v))) {
       for (let word of splitAnswer) {
@@ -885,13 +892,16 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
               );
               locationLookUp[locationCurrent].roomInventory.splice(i, 1);
               setTimeout(game, 2000);
+              break
             } else {
               notSure();
               setTimeout(game, 2000);
+              break
             }
           } else {
             notSure();
             setTimeout(game, 2000);
+            break
           }
         }
       }
