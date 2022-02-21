@@ -66,7 +66,7 @@ let objectList = [
   "master",
   "agent",
 ];
-let itemList = ["package", "remote", "pill", "disk", "carrot", "kung", "key"];
+let itemList = ["package", "remote", "pill", "disk", "carrot", "kung", "key", "letter"];
 let playerInventory = [];
 
 class Location {
@@ -112,7 +112,7 @@ but you can't reach it because the rabbit is in the way and rabbits are stubborn
         game();
       }
     } else if (this.name === "agent") {
-      log(`\n\n"Hello ${playerName}!!\n\n\
+      log(`\n"Hello ${playerName}!!\n\n\
 So good of you to join us...\n\n\
 Welcome to the desert of the REAL!"\n\n\n\
 TO BE CONTINUED...\n\n\
@@ -167,16 +167,14 @@ A prison ... for your mind."
       keyPress();
       await keypress();
       console.clear();
-      log(
-        "Unfortunately, no one can be simply told what the Xirtam is. \
+      log("Unfortunately, no one can be simply told what the Xirtam is. \
 You have to see it for yourself.\n\n\
 This is your last chance. After this, there is no turning back.\n\n\
 You take the blue pill, the story ends, you wake up in your bed and believe \
 whatever you want to believe.\n\n\
 You take the red pill, you stay in Wonderland, and I show you how deep \
-the black and white rabbit hole goes..."
-      );
-
+the black and white rabbit hole goes...\n\n\
+Also be sure to remember this: S = 3");
       let answer = await ask("\nDo you want to take the Blue Pill or the Red Pill? > ");
       answer = sani(answer);
       while (answer !== "blue" && answer !== "red") {
@@ -205,18 +203,52 @@ this is not not where you want to be...\n\n\n\
         console.clear()
         log("\nYou swallow the Red pill...\n\n\
 (but you also decide to keep the blue pill in your back pocket \
-in case you made the wrong decision and want to exit the game.");
+in case you made the wrong decision and want to exit the game.)");
         keyPress();
         await keypress();
         console.clear();
         log("Remember ...\n\n\
 ... all I'm offering is the truth, nothing more.\n\n\
-Also be sure to remember this: S = 3");
+You put the letter and the blue pill in your pocket and carry on...");
         playerInventory.push(" Blue Pill");
+        playerInventory.push(" Letter");
         keyPress();
         await keypress();
         game();
       }
+    } else if (this.name === "letter"){
+      console.clear();
+      log(`You go through the letter again...\n\n\
+Hello ${playerName},\n\n\
+Let me tell you why you're here. You know something. \
+What you know, you can't explain. But you feel it. You felt it your entire life: \
+Something's wrong with the world. You don't know what, but it's there. \
+Like a splinter in your mind, driving you mad.\n\n\
+The Xirtam? Do you want to know what it is?`);
+      keyPress();
+      await keypress();
+      console.clear();
+      log("The Xirtam is everywhere. It is all around us. Even now, in this very room. \
+You can see it when you look out your window or when you turn on your television. \
+You can feel it when you go to work, when you go to church, when you pay your taxes. \
+It is the world that has been, pulled over your eyes to blind you from the truth. \
+The truth that you are a slave. Like everyone else, you were born into bondage... \
+Born into a prison that you cannot smell or taste or touch.\n\n\
+A prison ... for your mind.");
+      keyPress();
+      await keypress();
+      console.clear();
+      log("Unfortunately, no one can be simply told what the Xirtam is. \
+You have to see it for yourself.\n\n\
+This is your last chance. After this, there is no turning back.\n\n\
+You take the blue pill, the story ends, you wake up in your bed and believe \
+whatever you want to believe.\n\n\
+You take the red pill, you stay in Wonderland, and I show you how deep \
+the black and white rabbit hole goes...\n\n\
+Also be sure to remember this: S = 3");
+      keyPress();
+      await keypress();
+      game();
     } else if (this.name === "pill") {
       console.clear();
       log("\nYou swallow the Blue pill...");
@@ -237,14 +269,14 @@ this is not not where you want to be...\n\n\n\
       process.exit();
     } else if (this.name === "remote") {
       if (locationCurrent !== "room2") {
-        log("You can't use that here...");
+        log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         console.clear();
         log(`You push the power button of the remote and the TV turns on \
 and a tape starts playing.\n\n\
 A person dressed in leather and wearing sunglasses appears and start talking...\n\n\
-Hello ${playerName}, I've been expecting you.\n\
+Hello ${playerName}, I've been expecting you.\n\n\
 I am Suehprom. It's an honor to meet you.\n\n\
 Welcome to the Construct. It's a loading program. \
 You're inside a computer program, your clothes are different, your hair has changed. \
@@ -281,7 +313,7 @@ At the end, you tell to yourself: "I know Kung Fu."`);
       }
     } else if (this.name === "kung") {
       if (locationCurrent !== "room5") {
-        log("You can't use that here...");
+        log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         let i = playerInventory.indexOf(this.name2);
@@ -304,7 +336,7 @@ The martial arts master has resumed his position and says nothing...`);
       }
     } else if (this.name === "carrot") {
       if (locationCurrent !== "room3") {
-        log("You can't use that here...");
+        log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         carrotLoop++
@@ -322,7 +354,7 @@ You can now see the item that was in its hole: it's a golden key.`);
       }
     } else if (this.name === "key") {
       if (locationCurrent !== "room1") {
-        log("You can't use that here...");
+        log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         let i = playerInventory.indexOf(this.name2);
@@ -378,7 +410,7 @@ let hole = new RoomObject(
 let desk = new RoomObject(
   "desk",
   "It's an old fashioned, but sturdy desk. You decide to take a look in the drawer. \
-You see a note inside.\n\
+You see a note inside.\n\n\
 The note says E = 7"
 );
 
@@ -391,8 +423,8 @@ On the screen you see it saying: Please insert disk in drive A:"
 let safe = new RoomObject(
   "safe",
   "An old looking safe -  looks like it needs a code\n\
-On top of the keypad you can see 4 big capital letters that spell out: \
-S . A . F . E "
+On top of the keypad you can see 4 big capital letters that spell out: \n\
+          S . A . F . E "
 );
 
 let master = new RoomObject(
@@ -423,6 +455,8 @@ let objectLookUp = {
 
 let package = new Item("package", " Brown Package");
 
+let letter = new Item("letter", " Letter")
+
 let remote = new Item("remote", " Remote Control");
 
 let pill = new Item("pill", " Blue Pill");
@@ -437,6 +471,7 @@ let key = new Item("key", " Golden Key");
 
 let itemLookUp = {
   package,
+  letter,
   remote,
   pill,
   disk,
@@ -737,7 +772,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
   }
   log(`Doors you can [go] through:${locationLookUp[locationCurrent].doors}\n`);
   if (playerInventory.length !== 0) {
-    log(`Objects you can [use] in your inventory:${playerInventory}\n`);
+    log(`Objects in your inventory that you can [use]:${playerInventory}\n`);
   }
 
   let answer = await ask("What would you like to do?\n\n\
