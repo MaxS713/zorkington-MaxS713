@@ -9,10 +9,13 @@ const readlineInterface = readline.createInterface({
   terminal: false,
 });
 
+//found this on google to wrap the text: It just works!
 const wrap = (s) => s.replace(
   /(?![^\n]{1,80}$)([^\n]{1,80})\s/g, '$1\n'
 );
 
+//instead of typing console.log each time, 
+//this function prints and wraps text for me
 function log(string){
   console.log(wrap(string))
 }
@@ -28,6 +31,7 @@ const keypress = async () => {
   );
 };
 
+//Variables I'll need throughout the game
 let room1Loop = 0;
 let room2Loop = 0;
 let room3Loop = 0;
@@ -64,10 +68,7 @@ let objectList = [
 ];
 let itemList = ["package", "remote", "pill", "disk", "carrot", "kung", "key"];
 let playerInventory = [];
-let playerName = "test";
 
-
-//the Location Class with its constructor
 class Location {
   constructor(name, description, objectsInRoom, doors, roomInventory) {
     this.name = name;
@@ -77,7 +78,6 @@ class Location {
     this.roomInventory = roomInventory;
   }
 }
-//the RoomObject Class with its constructor
 class RoomObject {
   constructor(name, description) {
     this.name = name;
@@ -529,50 +529,17 @@ function capitalize(string) {
   return string;
 }
 
-//Function to 'sanitize' a string
-//by lowercasing everything and taking away all spaces
+//Function to 'sanitize' inputs
 function sani(inputToSani) {
-  return inputToSani
-    .toLowerCase()
-    .replaceAll(" ", "")
-    .replaceAll("-", "")
-    .replaceAll(".", "");
+  return inputToSani.toLowerCase().replaceAll(" ", "").replaceAll("-", "").replaceAll(".", "");
 }
 
-function sani2(inputToSani2) {
-  return inputToSani2.toLowerCase().replaceAll("-", "");
-}
-
-//Function to 'validate' a Y or N input - NEEDED?
-function validateYNInput(x) {
-  if (sani(x) !== "y" && sani(x) !== "n") {
-    return false;
-  } else {
-    return true;
-  }
-}
-
+//I print these phrases a lot, so this functions make it easy to call them
 function keyPress() {
   log("\n> Press any key to continue...");
 }
-
 function notSure() {
   log("\nNot sure what you're trying to do...");
-}
-
-function test() {
-  room1Loop = 0;
-  room2Loop = 0;
-  room3Loop = 0;
-  room4Loop = 0;
-  room5Loop = 0;
-  room6Loop = 0;
-  doorLoop = 0
-  checkLoop = 0;
-  x = 2;
-  y = 2;
-  playerName = "test";
-  game();
 }
 
 async function mainMenu() {
@@ -776,144 +743,117 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
   let answer = await ask("What would you like to do?\n\n\
 > ");
 
-  saniAnswer = sani2(answer);
+  saniAnswer = answer.toLowerCase().replaceAll("-", "").replaceAll(".", "");
   let splitAnswer = saniAnswer.split(" ");
   let word1 =""
   let numberOfDir = 0
   checkLoop = 0;
 
   if (splitAnswer.includes("inspect")) {
-    if (objectList.some((v) => splitAnswer.toString().includes(v))) {
-      for (let word of splitAnswer) {
-        if (objectList.includes(word)) {
-          if (
-            locationLookUp[locationCurrent].objectsInRoom
-              .toString()
-              .includes(objectLookUp[word].name)
-          ) {
-            console.clear();
-            objectLookUp[word].describe();
-            break;
-          } else {
-            notSure();
-            setTimeout(game, 2000);
-            break
-          }
-        }
+    for (let word of splitAnswer) {
+      if (objectList.includes(word)) {
+        word1 = word
       }
-    } else {
-      notSure();
-      setTimeout(game, 2000);
     }
-  } else if (splitAnswer.includes("go")) {
-    if (directions.some((v) => splitAnswer.toString().includes(v))) {
-
-//over complicated way of making sure a space between two directions comes back as one word :l
-      for (let word of splitAnswer) {
-        if (directions.includes(word) && numberOfDir===0) {
-          numberOfDir++
-          word1 = word
-        } else if (directions.includes(word) && numberOfDir===1) {
-          numberOfDir++
-          word1 = word1 + word
-        }
-      }
-      if (doorLoop === 0 && locationCurrent === "room1" && word1 === "north") {
-        log("\nThis door won't open... there's a golden lock on it...");
-        setTimeout(game, 2000);
-      } else if (directions.includes(word1)) {
-        if (locationStates[locationCurrent].includes(word1)) {
-          checkLoop++;
-          directionHeaded = "";
-          if (answer.includes("east")) {
-            directionHeaded = directionHeaded + "east";
-            x++;
-          }
-          if (answer.includes("west")) {
-            directionHeaded = directionHeaded + "west";
-            x--;
-          }
-          if (answer.includes("south")) {
-            directionHeaded = "south" + directionHeaded;
-            y--;
-          }
-          if (answer.includes("north")) {
-            directionHeaded = "north" + directionHeaded;
-            y++;
-          }
-          log(`\nYou're going through the door heading ${sani(directionHeaded)}.`);
-          setTimeout(game, 2000);
-        } else if (checkLoop === 0) {
-          log("\nYou can't go in that direction...");
-          setTimeout(game, 2000);
-        } else {
-          notSure();
-          setTimeout(game, 2000);
-        }
-      }
-    } else {
-      notSure();
-      setTimeout(game, 2000);
-    }
-  } else if (splitAnswer.includes("use")) {
-    if (itemList.some((v) => splitAnswer.toString().includes(v))) {
-      for (let word of splitAnswer) {
-        if (itemList.includes(word)) {
-          word1 = word
-        }
-      }
-      if(itemList.includes(word1)){
-        if (playerInventory.includes(itemLookUp[word1].name2)){
-          if (itemLookUp[word1].name) {
-            itemLookUp[word1].use();
-          } else {
-            notSure();
-            setTimeout(game, 2000);  
-          }
-        } else {
-          notSure();
-          setTimeout(game, 2000);
-        }
+    if (objectLookUp[word1]){
+      if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[word1].name)) {
+        console.clear();
+        objectLookUp[word1].describe();
       } else {
         notSure();
         setTimeout(game, 2000);
       }
-    }  
+    } else {
+      notSure();
+      setTimeout(game, 2000);
+    }
+  
+  } else if (splitAnswer.includes("use")) {
+    for (let word of splitAnswer) {
+      if (itemList.includes(word)) {
+        word1 = word
+      }
+    }
+    if (itemLookUp[word1]){
+      if (playerInventory.includes(itemLookUp[word1].name2)){
+        itemLookUp[word1].use();
+      } else {
+        notSure();
+        setTimeout(game, 2000);  
+      }
+    } else {
+      notSure();
+      setTimeout(game, 2000);
+    } 
+
   } else if (splitAnswer.includes("take")) {
-    if (itemList.some((v) => splitAnswer.toString().includes(v))) {
-      for (let word of splitAnswer) {
-        if (itemList.includes(word)) {
-          if (locationLookUp[locationCurrent].roomInventory.includes(itemLookUp[word].name2)) {
-            if (itemLookUp[word].name) {
-              log(`\nYou pick up the${itemLookUp[word].name2}`);
-              playerInventory.push(itemLookUp[word].name2);
-              let i = locationLookUp[locationCurrent].roomInventory.indexOf(
-                itemLookUp[word].name2
-              );
-              locationLookUp[locationCurrent].roomInventory.splice(i, 1);
-              setTimeout(game, 2000);
-              break
-            } else {
-              notSure();
-              setTimeout(game, 2000);
-              break
-            }
-          } else {
-            notSure();
-            setTimeout(game, 2000);
-            break
-          }
-        }
+
+    for (let word of splitAnswer) {
+      if (itemList.includes(word)) {
+        word1 = word
+      }
+    }
+    let itemToTake = itemLookUp[word1].name2
+    let currentRoomInventory = locationLookUp[locationCurrent].roomInventory
+    if (itemLookUp[word1]){
+      if (currentRoomInventory.includes(itemToTake)) {
+        log(`\nYou pick up the${itemToTake}`);
+        playerInventory.push(itemToTake);
+        let i = currentRoomInventory.indexOf(itemToTake);
+        currentRoomInventory.splice(i, 1);
+        setTimeout(game, 2000);
+      } else {
+        notSure();
+        setTimeout(game, 2000);
       }
     } else {
       notSure();
       setTimeout(game, 2000);
     }
+
+  } else if (splitAnswer.includes("go")) {
+
+//overly complicated way of making sure a space between two directions comes back as one word :l
+    for (let word of splitAnswer) {
+      if (directions.includes(word) && numberOfDir===0) {
+        numberOfDir++
+        word1 = word
+      } else if (directions.includes(word) && numberOfDir===1) {
+        numberOfDir++
+        word1 = word1 + word
+      }
+    }
+    if (doorLoop === 0 && locationCurrent === "room1" && word1 === "north") {
+      log("\nThis door won't open... there's a golden lock on it...");
+      setTimeout(game, 2000);
+    } else if (directions.includes(word1)) {
+      if (locationStates[locationCurrent].includes(word1)) {
+        if (answer.includes("east")) {
+          x++;
+        }
+        if (answer.includes("west")) {
+          x--;
+        }
+        if (answer.includes("south")) {
+          y--;
+        }
+        if (answer.includes("north")) {
+          y++;
+        }
+        log(`\nYou're going through the door heading ${word1}.`);
+        setTimeout(game, 2000);
+      } else if (checkLoop === 0) {
+        log("\nYou can't go in that direction...");
+        setTimeout(game, 2000);
+      }
+    } else {
+      notSure();
+      setTimeout(game, 2000);
+    } 
   } else {
     notSure();
     setTimeout(game, 2000);
   }
 }
 
-// test()
-mainMenu();
+mainMenu()
