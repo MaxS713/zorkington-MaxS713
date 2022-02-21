@@ -41,6 +41,9 @@ let room6Loop = 0;
 let checkLoop = 0;
 let doorLoop = 0;
 let carrotLoop = 0;
+let tableLoop = 0;
+let masterLoop = 0;
+let safeLoop = 0;
 let x = 2;
 let y = 2;
 let directions = [
@@ -98,12 +101,17 @@ class RoomObject {
   async describe() {
     log(`${this.description}`);
 //customize the function for objects that have special outcome
-    if (this.name === "table") {
+    if (this.name === "table" && tableLoop === 0) {
+
+      tableLoop++
+      log("You take a closer look at the end table and you decide to open the drawer. \
+Inside you see a remote control.");
+      //for instance looking at the table adds the remote control to the room
       locationLookUp[locationCurrent].roomInventory.push(" Remote Control");
       keyPress();
       await keypress();
       game();
-
+    
     } else if (this.name === "hole" && carrotLoop === 0) {
 
       log("\nYou can see something shining inside, \
@@ -112,10 +120,19 @@ but you can't reach it because the rabbit is in the way and rabbits are stubborn
       await keypress();
       game();
 
-    } else if (this.name === "safe") {
+    } else if (this.name === "master" && masterLoop ===0){
+
+      log("\nAs you get closer, the martial artist quickly pushes you away, and with a secret techique, \
+slams you to the ground...")
+      keyPress();
+      await keypress();
+      game();
+
+    } else if (this.name === "safe" && safeLoop ===0) {
 
       let codeInput = await ask("\nWhat code do you input? > ");
       if (codeInput === "3587") {
+        safeLoop++
         log("\nThe safe opens!");
         log("You see a Floppy Disk Inside...");
         keyPress();
@@ -350,6 +367,7 @@ At the end, you tell to yourself: "I know Kung Fu."`);
         log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
+        masterLoop++
         let i = playerInventory.indexOf(this.name2);
         playerInventory.splice(i, 1);
         console.clear();
@@ -483,8 +501,7 @@ let tv = new RoomObject(
 
 let table = new RoomObject(
   "table",
-  "You take a closer look at the end table and you decide to open the drawer. \
-Inside you see a remote control."
+  "It's a small end table."
 );
 
 let rabbit = new RoomObject(
@@ -513,15 +530,13 @@ On the screen you see it saying: Please insert disk in drive A:"
 let safe = new RoomObject(
   "safe",
   "An old looking safe -  looks like it needs a code\n\
-On top of the keypad you can see 4 big capital letters that spell out: \n\
+On top of the keypad you can see 4 big capital letters that spell out: \n\n\
           S . A . F . E "
 );
 
 let master = new RoomObject(
   "master",
-  "You come closer to the martial art master. He's still silent and staring at you. \
-As you get closer, the martial artist quickly pushes you away, and with a secret techique, \
-slams you to the ground..."
+  "You come closer to the martial art master. He's is silent and staring at you."
 );
 
 let agent = new RoomObject(
@@ -613,7 +628,7 @@ function sani(inputToSani) {
 
 //I print these phrases a lot, so these functions make it easy to call them
 function keyPress() {
-  log("\n> Press any key to continue...");
+  log("\n> Press enter to continue...");
 }
 function notSure() {
   log("\nNot sure what you're trying to do...");
@@ -663,7 +678,7 @@ Example: "take key"\n\n\
 "use" - if (and only if!) an item is in your inventory, you can then "use" it.\n\
 Example: "use key"\n\n\
 I hope you enjoy your playthrough!\n\n\
-> Press any key to return to the main menu...`)
+> Press enter to return to the main menu...`)
   await keypress()
   mainMenu()
 }
@@ -689,7 +704,7 @@ async function start() {
     if (confirm === "y") {
       console.clear();
       log(`\n Ok, your name is ${playerName}\n\n\
-Press any key when you're ready to start the game!`);
+Press enter when you're ready to start the game!`);
       await keypress();
       introSequence();
     } else {
