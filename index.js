@@ -32,13 +32,7 @@ const keypress = async () => {
 };
 
 //Variables I'll need throughout the game
-let room1Loop = 0;
 let room2Loop = 0;
-let room3Loop = 0;
-let room4Loop = 0;
-let room5Loop = 0;
-let room6Loop = 0;
-let checkLoop = 0;
 let doorLoop = 0;
 let carrotLoop = 0;
 let tableLoop = 0;
@@ -46,7 +40,7 @@ let masterLoop = 0;
 let safeLoop = 0;
 let x = 2;
 let y = 2;
-let directions = [
+let validDirections = [
   "east",
   "south",
   "north",
@@ -56,57 +50,119 @@ let directions = [
   "northeast",
   "northwest",
 ];
-let objectList = [
-  "mirror",
-  "sofa",
-  "tv",
-  "table",
-  "rabbit",
-  "hole",
-  "desk",
-  "computer",
-  "safe",
-  "master",
-  "agent",
-];
-let itemList = [
-  "package", 
-  "remote", 
-  "pill", 
-  "disk", 
-  "carrot", 
-  "kung", 
-  "key", 
-  "letter"
-];
 let playerInventory = [];
-
 
 //creating the three class I'll need for objects, locations and items
 //with their different customized methods depending on how the items interact with the game
+
+//Locatation Class
 class Location {
-  constructor(name, description, objectsInRoom, doors, roomInventory) {
+  constructor(name, description, objectsInRoom, doorsInRoom, roomInventory, firstEncounter) {
     this.name = name;
     this.description = description;
     this.objectsInRoom = objectsInRoom;
-    this.doors = doors;
+    this.doorsInRoom = doorsInRoom;
     this.roomInventory = roomInventory;
+    this.firstEncounter = firstEncounter;
   }
 }
+
+let room1 = new Location(
+  "Main Room",
+  "a room with bright white walls.",
+  [" a mirror on the wall"],
+  [" a door to the east", " a door to the south", " a door to the north"],
+  [" Brown Package"],
+  true,
+);
+
+let room2 = new Location(
+  "second room",
+  "a living room with a tv and a red sofa.",
+  [" a red sofa", " a tv", " a small end table with a drawer"],
+  [" a door to the west", " a door to the south", " a door to the east"],
+  [],
+  true,
+);
+
+let room3 = new Location(
+  "third room",
+  "a small room with a black and white rabbit and its rabbit hole.\n\n\
+On the wall someone has written down F = 8",
+  [" a black and white rabbit", " a rabbit hole"],
+  [" a door to the west", " a door to the south-west"],
+  [],
+  true,
+);
+
+let room4 = new Location(
+  "the fourth room",
+  "an office room.",
+  [" a desk with a drawer", " an old desktop computer", " a safe"],
+  [" a door to the north-east", " a door to the north", " a door to the west"],
+  [],
+  true,
+);
+
+let room5 = new Location(
+  "the fifth room",
+  "a dojo.",
+  [" a martial arts master"],
+  [" a door to the east", " a door to the north"],
+  [],
+  true,
+);
+
+let room6 = new Location(
+  "End City",
+  "a city in ruins",
+  [" an agent"],
+  [" a door to the south"],
+  [],
+  true,
+);
+
+//Look up table
+let locationLookUp = {
+  room1,
+  room2,
+  room3,
+  room4,
+  room5,
+  room6,
+};
+
+//State machine for the location
+//where you can or cannot go
+//from one room to another
+let locationStates = {
+  room1: ["east", "south", "north"],
+  room2: ["west", "east", "south"],
+  room3: ["west", "southwest"],
+  room4: ["northeast", "north", "west"],
+  room5: ["east", "north"],
+  room6: ["south"],
+};
+
+
+//Class for the objects(furniture) in each room
 class RoomObject {
   constructor(name, description) {
     this.name = name;
     this.description = description;
   }
   async describe() {
+
+//The method prints the description of the object 
     log(`${this.description}`);
+
 //customize the function for objects that have special outcome
     if (this.name === "table" && tableLoop === 0) {
 
       tableLoop++
-      log("You take a closer look at the end table and you decide to open the drawer. \
+      log("\nYou take a closer look at the end table and you decide to open the drawer. \n\
 Inside you see a remote control.");
-      //for instance looking at the table adds the remote control to the room
+//for instance looking at the table adds the remote control to the room
       locationLookUp[locationCurrent].roomInventory.push(" Remote Control");
       keyPress();
       await keypress();
@@ -137,7 +193,7 @@ slams you to the ground...")
         log("You see a Floppy Disk Inside...");
         keyPress();
         await keypress();
-        locationLookUp[locationCurrent].roomInventory.push(disk.name2);
+        locationLookUp[locationCurrent].roomInventory.push(disk.inventoryName);
         game();
       } else {
         log("\nThat didn't seem to work...");
@@ -145,7 +201,9 @@ slams you to the ground...")
         await keypress();
         game();
       }
+
     } else if (this.name === "agent") {
+
       log(`\n"Hello ${playerName}!!\n\n\
 So good of you to join us...\n\n\
 Welcome to the desert of the REAL!"\n\n\n\
@@ -155,28 +213,110 @@ Thanks for playing!\n\n\
       await keypress();
       console.clear();
       process.exit();
+
     } else {
+
       keyPress();
       await keypress();
       game();
+
     }
   }
 }
+
+let mirror = new RoomObject(
+  "mirror",
+  "You look into the mirror... You look different.\n\
+You're wearing a long black robe and your hair has changed."
+);
+
+let sofa = new RoomObject(
+  "red sofa",
+  "This sofa looks comfy, you sit in it and relax. \
+Then you realize you might have more important things to do!"
+);
+
+let tv = new RoomObject(
+  "tv",
+  "An old looking TV, you're not sure how to turn it on..."
+);
+
+let table = new RoomObject(
+  "table",
+  "It's a small end table."
+);
+
+let rabbit = new RoomObject(
+  "rabbit",
+  "It's a fluffy black and white rabbit. It's very cute. It's looking at you with big wondering eyes."
+);
+
+let hole = new RoomObject(
+  "hole",
+  "It's the rabbit's hole."
+);
+
+let desk = new RoomObject(
+  "desk",
+  "It's an old fashioned, but sturdy desk. You decide to take a look in the drawer. \
+You see a note inside.\n\n\
+The note says E = 7"
+);
+
+let computer = new RoomObject(
+  "computer",
+  "It's one of those older computers.\n\n\
+On the screen you see it saying: Please insert disk in drive A:"
+);
+
+let safe = new RoomObject(
+  "safe",
+  "An old looking safe -  looks like it needs a code\n\
+On top of the keypad you can see 4 big capital letters that spell out: \n\n\
+          S . A . F . E "
+);
+
+let master = new RoomObject(
+  "master",
+  "You come closer to the martial art master. He's is silent and staring at you."
+);
+
+let agent = new RoomObject(
+  "agent",
+  "You get closer to the agent, he starts talking..."
+);
+
+let objectLookUp = {
+  mirror,
+  sofa,
+  tv,
+  table,
+  rabbit,
+  hole,
+  desk,
+  computer,
+  safe,
+  master,
+  agent,
+};
+
+
+//Class for the items the player can pick up and use
 class Item {
-  constructor(name, name2) {
-    this.name = name;
-    this.name2 = name2;
+  constructor(shortName, inventoryName) {
+    this.shortName = shortName;
+    this.inventoryName = inventoryName;
   }
 
   async use() {
 
 //what every item do when the method use is applied to them
-    if (this.name === "package") {
+    if (this.shortName === "package") {
 
-//remove the item from the player's inventory, when used
-//by looking up its index and then 'splicing' it
-      let i = playerInventory.indexOf(this.name2);
-      playerInventory.splice(i, 1);
+//remove the item from the player's inventory when used
+//by looking up its index in the inventory and then 'splicing' it
+      let indexOfItemToRemove = playerInventory.indexOf(this.inventoryName);
+      playerInventory.splice(indexOfItemToRemove, 1);
       console.clear();
       log(`You open the package, inside you see an envelope that says:\n\n\
       "Welcome to the Xirtam."\n\n\
@@ -256,7 +396,7 @@ You put the letter and the blue pill in your pocket and carry on...");
         game();
       }
 
-    } else if (this.name === "letter"){
+    } else if (this.shortName === "letter"){
 
       console.clear();
       log(`You go through the letter again...\n\n\
@@ -291,7 +431,7 @@ Also be sure to remember this: S = 3");
       await keypress();
       game();
 
-    } else if (this.name === "pill") {
+    } else if (this.shortName === "pill") {
 
       console.clear();
       log("\nYou swallow the Blue pill...");
@@ -311,7 +451,7 @@ this is not not where you want to be...\n\n\n\
       console.clear();
       process.exit();
 
-    } else if (this.name === "remote") {
+    } else if (this.shortName === "remote") {
 
 //if the item isn't used in its proper room
 //the game doesn't allow it
@@ -341,35 +481,35 @@ To do this, all you need to know to know right now is A = 5, it will make sense 
         game();
       }
 
-    } else if (this.name === "disk") {
+    } else if (this.shortName === "disk") {
 
       if (locationCurrent !== "room4") {
         log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
-        let i = playerInventory.indexOf(this.name2);
-        playerInventory.splice(i, 1);
+        let indexOfItemToRemove = playerInventory.indexOf(this.inventoryName);
+        playerInventory.splice(indexOfItemToRemove, 1);
         console.clear();
         log(`You insert the disk into the computer...\n\n\
 A folder called "kung-fu" appears, you open it, a whole bunch of videos \
 about kung fu start playing...\n\n\
 You sit there for about 2 hours.\n\n\
 At the end, you tell to yourself: "I know Kung Fu."`);
-        playerInventory.push(kung.name2);
+        playerInventory.push(kung.inventoryName);
         keyPress();
         await keypress();
         game();
       }
 
-    } else if (this.name === "kung") {
+    } else if (this.shortName === "kung") {
 
       if (locationCurrent !== "room5") {
         log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         masterLoop++
-        let i = playerInventory.indexOf(this.name2);
-        playerInventory.splice(i, 1);
+        let indexOfItemToRemove = playerInventory.indexOf(this.inventoryName);
+        playerInventory.splice(indexOfItemToRemove, 1);
         console.clear();
         log(`You now know Kung-Fu and have the confidence \
 to take on the martial arts master,\n\
@@ -381,40 +521,40 @@ You do not truly know someone, until you fight them."\n\n\
 He hands you a carrot and says, "Here, take this. I have a feeling you will need it."\n\n\
 "Why on earth did he give me a carrot?" you think to yourself.\n\n\
 The martial arts master has resumed his position and says nothing...`);
-        playerInventory.push(carrot.name2);
+        playerInventory.push(carrot.inventoryName);
         keyPress();
         await keypress();
         game();
       }
 
-    } else if (this.name === "carrot") {
+    } else if (this.shortName === "carrot") {
 
       if (locationCurrent !== "room3") {
         log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
         carrotLoop++
-        let i = playerInventory.indexOf(this.name2);
-        playerInventory.splice(i, 1);
+        let indexOfItemToRemove = playerInventory.indexOf(this.inventoryName);
+        playerInventory.splice(indexOfItemToRemove, 1);
         console.clear();
         log(`You hand the carrot to the black and white rabbit,\n\
 The rabbit inspects it carefully. Then suddenly its eyes go wide! It raises its ears, bites into the carrot, \
 takes it, and runs away!\n\n\
 You can now see the item that was in its hole: it's a golden key.`);
-        locationLookUp[locationCurrent].roomInventory.push(key.name2);
+        locationLookUp[locationCurrent].roomInventory.push(key.inventoryName);
         keyPress();
         await keypress();
         game();
       }
 
-    } else if (this.name === "key") {
+    } else if (this.shortName === "key") {
 
       if (locationCurrent !== "room1") {
         log("\nYou can't use that here...");
         setTimeout(game, 2000);
       } else {
-        let i = playerInventory.indexOf(this.name2);
-        playerInventory.splice(i, 1);
+        let indexOfItemToRemove = playerInventory.indexOf(this.inventoryName);
+        playerInventory.splice(indexOfItemToRemove, 1);
         log("\nYou use the golden key on the door heading north...\n\
 It unlocks...");
         doorLoop++;
@@ -429,120 +569,6 @@ It unlocks...");
     }
   }
 }
-
-//Creating the locations, objects and items based on their class
-//and parameters 
-
-let room1 = new Location(
-  "Main Room",
-  "a room with bright white walls.",
-  [" a mirror on the wall"],
-  [" a door to the east", " a door to the south", " a door to the north"],
-  [" Brown Package"]
-);
-
-let room2 = new Location(
-  "second room",
-  "a living room with a tv and a red sofa.",
-  [" a red sofa", " a tv", " a small end table with a drawer"],
-  [" a door to the west", " a door to the south", " a door to the east"],
-  []
-);
-
-let room3 = new Location(
-  "third room",
-  "a small room with a black and white rabbit and its rabbit hole.\n\n\
-On the wall someone has written down F = 8",
-  [" a black and white rabbit", " a rabbit hole"],
-  [" a door to the west", " a door to the south-west"],
-  []
-);
-
-let room4 = new Location(
-  "the fourth room",
-  "an office room.",
-  [" a desk with a drawer", " an old desktop computer", " a safe"],
-  [" a door to the north-east", " a door to the north", " a door to the west"],
-  []
-);
-
-let room5 = new Location(
-  "the fifth room",
-  "a dojo.",
-  [" a martial arts master"],
-  [" a door to the east", " a door to the north"],
-  []
-);
-
-let room6 = new Location(
-  "End City",
-  "a city in ruins",
-  [" an agent"],
-  [" a door to the south"],
-  []
-);
-
-let mirror = new RoomObject(
-  "mirror",
-  "You look into the mirror... You look different.\n\
-You're wearing a long black robe and your hair has changed."
-);
-
-let sofa = new RoomObject(
-  "red sofa",
-  "This sofa looks comfy, you sit in it and relax. \
-Then you realize you might have more important things to do!"
-);
-
-let tv = new RoomObject(
-  "tv",
-  "An old looking TV, you're not sure how to turn it on..."
-);
-
-let table = new RoomObject(
-  "table",
-  "It's a small end table."
-);
-
-let rabbit = new RoomObject(
-  "rabbit",
-  "It's a fluffy black and white rabbit. It's very cute. It's looking at you with big wondering eyes."
-);
-
-let hole = new RoomObject(
-  "hole",
-  "It's the rabbit's hole."
-);
-
-let desk = new RoomObject(
-  "desk",
-  "It's an old fashioned, but sturdy desk. You decide to take a look in the drawer. \
-You see a note inside.\n\n\
-The note says E = 7"
-);
-
-let computer = new RoomObject(
-  "computer",
-  "It's one of those older computers.\n\n\
-On the screen you see it saying: Please insert disk in drive A:"
-);
-
-let safe = new RoomObject(
-  "safe",
-  "An old looking safe -  looks like it needs a code\n\
-On top of the keypad you can see 4 big capital letters that spell out: \n\n\
-          S . A . F . E "
-);
-
-let master = new RoomObject(
-  "master",
-  "You come closer to the martial art master. He's is silent and staring at you."
-);
-
-let agent = new RoomObject(
-  "agent",
-  "You get closer to the agent, he starts talking..."
-);
 
 let package = new Item("package", " Brown Package");
 
@@ -560,30 +586,6 @@ let kung = new Item("kung", " Kung-Fu Skills");
 
 let key = new Item("key", " Golden Key");
 
-//Look up tables
-let locationLookUp = {
-  room1,
-  room2,
-  room3,
-  room4,
-  room5,
-  room6,
-};
-
-let objectLookUp = {
-  mirror,
-  sofa,
-  tv,
-  table,
-  rabbit,
-  hole,
-  desk,
-  computer,
-  safe,
-  master,
-  agent,
-};
-
 let itemLookUp = {
   package,
   letter,
@@ -595,20 +597,10 @@ let itemLookUp = {
   key,
 };
 
-//State machine for the location
-//where you can or cannot go
-let locationStates = {
-  room1: ["east", "south", "north"],
-  room2: ["west", "east", "south"],
-  room3: ["west", "southwest"],
-  room4: ["northeast", "north", "west"],
-  room5: ["east", "north"],
-  room6: ["south"],
-};
-
 
 ////Functions I'll need
 
+//function given to await an input
 function ask(questionText) {
   return new Promise((resolve, reject) => {
     readlineInterface.question(questionText, resolve);
@@ -622,6 +614,7 @@ function capitalize(string) {
 }
 
 //Function to 'sanitize' inputs
+//replace.all only works with the LTS of node.js!!
 function sani(inputToSani) {
   return inputToSani.toLowerCase().replaceAll(" ", "").replaceAll("-", "").replaceAll(".", "");
 }
@@ -667,14 +660,15 @@ Input: > ");
 //little tutorial
 async function tutorial(){
   console.clear()
-  log(`Thank you for trying my game. Here's a quick guide on how to play.\n\n\
-There are 4 main actions you can write down in each room: "go", "inspect", "take" and "use".\n\n\
+  log(`Thank you for trying my game. Here's a quick guide on how to play:\n\n\
+There are 5 main actions you can write down in each room: "go", "inspect", "take", "drop" and "use".\n\n\
 "go" - lets you move to another room - north, east, south, west.\n\
 Example: "go east" or "go door south-west"\n\n\
 "inspect" - lets you take a closer look at objects, like furniture for instance, around the room.\n\
 Example: "inspect mirror" or "inspect the small table"\n\n\
-"take" - lets you pick up items from the room's inventory and place it in your own inventory.\n\
-Example: "take key"\n\n\
+"take" - lets you pick up items from the room's inventory and place it in your own inventory. \
+You can also "drop" them back in the room\n\
+Example: "take key" or "drop letter"\n\n\
 "use" - if (and only if!) an item is in your inventory, you can then "use" it.\n\
 Example: "use key"\n\n\
 I hope you enjoy your playthrough!\n\n\
@@ -716,46 +710,25 @@ Press enter when you're ready to start the game!`);
 //little "cutscene" 
 async function introSequence() {
   console.clear();
-  setTimeout(() => {
-    log(`Wake up, ${playerName}...`);
-  }, 2500);
-  setTimeout(() => {
-    console.clear();
-  }, 6000);
-  setTimeout(() => {
-    log("The Xirtam has you...");
-  }, 8000);
-  setTimeout(() => {
-    console.clear();
-  }, 12000);
-  setTimeout(() => {
-    log("Follow the black and white rabbit.");
-  }, 15000);
-  setTimeout(() => {
-    console.clear();
-  }, 19500);
-  setTimeout(() => {
-    log(`Knock, knock, ${playerName}.`);
-  }, 21500);
-  setTimeout(() => {
-    console.clear();
-  }, 24500);
-  setTimeout(() => {
-    log("\n\n     *KNOCK* *KNOCK*");
-  }, 26500);
-  setTimeout(() => {
-    console.clear();
-  }, 30000);
+  setTimeout(() => {log(`Wake up, ${playerName}...`);}, 2500);
+  setTimeout(() => {console.clear();}, 6000);
+  setTimeout(() => {log("The Xirtam has you...");}, 8000);
+  setTimeout(() => {console.clear();}, 12000);
+  setTimeout(() => {log("Follow the black and white rabbit.");}, 15000);
+  setTimeout(() => {console.clear();}, 19500);
+  setTimeout(() => {log(`Knock, knock, ${playerName}.`);}, 21500);
+  setTimeout(() => {console.clear();}, 24500);
+  setTimeout(() => {log("\n\n     *KNOCK* *KNOCK*");}, 26500);
+  setTimeout(() => {console.clear();}, 30000);
   setTimeout(game, 32000);
 }
 
 //actual start of the game 
 async function game() {
 
-//Instead of redifining the current room location each time
 //I created a system of coordinates x and y - when you move east x++ 
 //and when you move north y++, etc...
-//x and y define which room you're in
+//x and y define which current room you're in
   if (x === 2 && y === 2) {
     locationCurrent = "room1";
   } else if (x === 3 && y === 2) {
@@ -771,10 +744,10 @@ async function game() {
   }
 
 //some intros to each room that only play once on 
-//the first time you enter them, a.k.a if roomLoop === 0
+//the first time you enter them
   console.clear();
-  if (locationCurrent === "room1" && room1Loop === 0) {
-    room1Loop++;
+  if (locationCurrent === "room1" && locationLookUp[locationCurrent].firstEncounter === true) {
+    locationLookUp[locationCurrent].firstEncounter = false
     log("You wake up to the sound of somebody knocking \
 at the door, you're in a bright room with white walls \
 and your head hurts...\n\n\
@@ -786,8 +759,8 @@ a small hole in the wall going east.");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room2" && room2Loop === 0) {
-    room2Loop++;
+  if (locationCurrent === "room2" && locationLookUp[locationCurrent].firstEncounter === true && room2Loop !== 42) {
+    locationLookUp[locationCurrent].firstEncounter = false
     log("As you enter a room, you can see the black and white rabbit \
 continuing to hop towards the east in panic.\n\n\
 The room is very odd: it's entirely empty except for a red sofa and an old \
@@ -795,31 +768,31 @@ CRT TV on a small end table...");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room2" && room2Loop === 42) {
-    room2Loop++;
+  if (locationCurrent === "room2" && locationLookUp[locationCurrent].firstEncounter === true && room2Loop === 42) {
+    locationLookUp[locationCurrent].firstEncounter = false
     log("The room is very odd: it's entirely empty except for a red sofa and an old \
 CRT TV on a small end table...");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room3" && room3Loop === 0) {
-    room3Loop++;
+  if (locationCurrent === "room3" && locationLookUp[locationCurrent].firstEncounter === true) {
+    locationLookUp[locationCurrent].firstEncounter = false
     room2Loop = 42
     log("You enter a tiny room, where you can see the black and white rabbit that was running away.\n\n\
 As you enter, it jumps into its rabbit hole, flattens its ears, and looks at you timidly.");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room4" && room4Loop === 0) {
-    room4Loop++;
+  if (locationCurrent === "room4" && locationLookUp[locationCurrent].firstEncounter === true) {
+    locationLookUp[locationCurrent].firstEncounter = false
     log("You enter a room that looks like an office room\n\
 In it, there's a desk with an ancient IBM desktop computer. \
 In the corner of the room, you also notice a safe.");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room5" && room5Loop === 0) {
-    room5Loop++;
+  if (locationCurrent === "room5" && locationLookUp[locationCurrent].firstEncounter === true) {
+    locationLookUp[locationCurrent].firstEncounter = false
     log("The room you enter is a dojo.\n\n\
 You're surprised to see someone is here, standing in the center, \
 who seems to be a martial arts master.\n\n\
@@ -827,34 +800,39 @@ He doesn't say anything - he's staring at you, silently.");
     keyPress();
     await keypress();
   }
-  if (locationCurrent === "room6" && room6Loop === 0) {
-    room6Loop++;
+  if (locationCurrent === "room6" && locationLookUp[locationCurrent].firstEncounter === true) {
+    locationLookUp[locationCurrent].firstEncounter = false;
     log("Pass the door, you see a whole city entirely in ruins...\n\n\
 In the middle stands a person wearing a suit, he looks like an agent...");
     keyPress();
     await keypress();
   }
 
+
 //this is the main screen for each room
-//displays the current location and its description
-//displays the current location's objects
-//and, if any, a.k.a .roomInventory or playerInventory !==0,
-//shows any items in the room or in the player's inventory
+
   console.clear();
 
+//displays the current location and its description
   log(`You are in the ${locationLookUp[locationCurrent].name}, \
 ${locationLookUp[locationCurrent].description}\n`);
 
+//displays the current location's objects
   log(`Objects around you that you can [inspect]:\
 ${locationLookUp[locationCurrent].objectsInRoom}.\n`);
 
+//if any, a.k.a .roomInventory.length !==0,
+//shows any items present in the room
   if (locationLookUp[locationCurrent].roomInventory.length !== 0) {
     log(`Items in the room that you can [take]:\
 ${locationLookUp[locationCurrent].roomInventory}\n`);
   }
 
-  log(`Doors you can [go] through:${locationLookUp[locationCurrent].doors}\n`);
+//display doors the player can take
+  log(`Doors you can [go] through:${locationLookUp[locationCurrent].doorsInRoom}\n`);
 
+//if any, a.k.a .playerInventory.length !==0,
+//shows any items present in the player's inventory
   if (playerInventory.length !== 0) {
     log(`Objects in your inventory that you can [use]:${playerInventory}\n`);
   }
@@ -868,29 +846,28 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
 //into an array of each words it contains
   let saniAnswer = answer.toLowerCase().replaceAll("-", "").replaceAll(".", "");
   let splitAnswer = saniAnswer.split(" ");
-  let word1 =""
-  let numberOfDir = 0
-  checkLoop = 0;
+  let object =""
+  let numberOfDirections = 0
 
-//the player can "inspect", "use", "take" and "go"
+//the player can "inspect", "use", "take", "drop" and "go"
 //first it checks if the action word is in the answer
   if (splitAnswer.includes("inspect")) {
 
     for (let word of splitAnswer) {
-      //"pulls" the object needed from the answer
-      //and asigns it to a variable
-      if (objectList.includes(word)) {
-        word1 = word
+      //if the object needed is in the answer
+      // it's asigned to a variable
+      if (objectLookUp[word]) {
+        object = word
       }
     }
 
-    //checks if the object exits in the lookup table
-    if (objectLookUp[word1]){
+    //checks if the object was in the answer
+    if (objectLookUp[object]){
       //checks if the object is in the current room
-      if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[word1].name)) {
+      if (locationLookUp[locationCurrent].objectsInRoom.toString().includes(objectLookUp[object].name)) {
         console.clear();
-      //if the conditions are met the method is called on the object
-        objectLookUp[word1].describe();
+      //if the conditions are met a method is called on the object
+        objectLookUp[object].describe();
     //if none of these conditions are met then the game
     //lets the user know and continues
       } else {
@@ -902,17 +879,17 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
       setTimeout(game, 2000);
     }
 
-    //similar checks here
+    //similar checks for every action word
   } else if (splitAnswer.includes("use")) {
 
     for (let word of splitAnswer) {
-      if (itemList.includes(word)) {
-        word1 = word
+      if (itemLookUp[word]) {
+        object = word
       }
     }
-    if (itemLookUp[word1]){
-      if (playerInventory.includes(itemLookUp[word1].name2)){
-        itemLookUp[word1].use();
+    if (itemLookUp[object]){
+      if (playerInventory.includes(itemLookUp[object].inventoryName)){
+        itemLookUp[object].use();
       } else {
         notSure();
         setTimeout(game, 2000);  
@@ -925,21 +902,55 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
   } else if (splitAnswer.includes("take")) {
 
     for (let word of splitAnswer) {
-      if (itemList.includes(word)) {
-        word1 = word
+      if (itemLookUp[word]) {
+        object = word
       }
     }
-    let itemToTake = itemLookUp[word1].name2
+    let itemToTake = itemLookUp[object].inventoryName
     let currentRoomInventory = locationLookUp[locationCurrent].roomInventory
-    if (itemLookUp[word1]){
+    if (itemLookUp[object]){
       if (currentRoomInventory.includes(itemToTake)) {
         //when the player "takes an object"
         //the object is "pushed" into his inventory
         //the item is removed from the room's inventory
         log(`\nYou pick up the${itemToTake}`);
         playerInventory.push(itemToTake);
-        let i = currentRoomInventory.indexOf(itemToTake);
-        currentRoomInventory.splice(i, 1);
+        let indexOfItemToRemove = currentRoomInventory.indexOf(itemToTake);
+        currentRoomInventory.splice(indexOfItemToRemove, 1);
+        setTimeout(game, 2000);
+      } else {
+        notSure();
+        setTimeout(game, 2000);
+      }
+    } else {
+      notSure();
+      setTimeout(game, 2000);
+    }
+
+  } else if (splitAnswer.includes("drop")) {
+
+    for (let word of splitAnswer) {
+      if (itemLookUp[word]) {
+        object = word
+      }
+    }
+
+    let itemToRemove = itemLookUp[object].inventoryName
+    let currentRoomInventory = locationLookUp[locationCurrent].roomInventory
+    
+    //You can't really "drop" this item, so I added an exeption.
+    if (itemToRemove === " Kung-Fu Skills") {
+      notSure();
+      setTimeout(game, 2000);
+    } else if (itemLookUp[object]){
+      if (playerInventory.includes(itemToRemove)) {
+        //when the player "removes an object"
+        //the object is "pushed" into the room inventory
+        //the item is removed from the player's inventory
+        log(`\nYou decide to drop the${itemToRemove} into the room...`);
+        currentRoomInventory.push(itemToRemove);
+        let indexOfItemToRemove = playerInventory.indexOf(itemToRemove);
+        playerInventory.splice(indexOfItemToRemove, 1);
         setTimeout(game, 2000);
       } else {
         notSure();
@@ -952,25 +963,29 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
 
   } else if (splitAnswer.includes("go")) {
 
-//overly complicated way of making sure a space between two directions comes back as one word :l
+//since we're looking at each word in the answer
+// this is an overly complicated way of making sure a space between two directions
+//(example: north east) comes back as one word (northeast) :l
     for (let word of splitAnswer) {
-      if (directions.includes(word) && numberOfDir===0) {
-        numberOfDir++
-        word1 = word
-      } else if (directions.includes(word) && numberOfDir===1) {
-        numberOfDir++
-        word1 = word1 + word
+      if (validDirections.includes(word) && numberOfDirections===0) {
+        numberOfDirections++
+        object = word
+      } else if (validDirections.includes(word) && numberOfDirections===1) {
+        numberOfDirections++
+        object = object + word
       }
     }
+    
     //this is the locked door of the game to the north in the first room,
     // the player needs to use a key to change the doorloop before it can open
-    if (doorLoop === 0 && locationCurrent === "room1" && word1 === "north") {
+    if (doorLoop === 0 && locationCurrent === "room1" && object === "north") {
       log("\nThis door won't open... there's a golden lock on it...");
       setTimeout(game, 2000);
-    } else if (directions.includes(word1)) {
-      //depending on the direction input in the answer
-      //the x, y coordinates change and assign a new room
-      if (locationStates[locationCurrent].includes(word1)) {
+
+    } else if (validDirections.includes(object)) {
+      //depending on the direction written in the answer
+      //the x, y coordinates change and by doing so directs to a new current room
+      if (locationStates[locationCurrent].includes(object)) {
         if (answer.includes("east")) {
           x++;
         }
@@ -983,12 +998,12 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
         if (answer.includes("north")) {
           y++;
         }
-        log(`\nYou're going through the door heading ${word1}.`);
+        log(`\nYou're going through the door heading ${object}.`);
         setTimeout(game, 2000);
         //if the player input a valid direction but the 
         //direction is not in the location states
         //the player can't move
-      } else if (checkLoop === 0) {
+      } else {
         log("\nYou can't go in that direction...");
         setTimeout(game, 2000);
       }
