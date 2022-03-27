@@ -53,7 +53,7 @@ let playerInventory = [];
 //creating the three class I'll need for objects, locations and items
 //with their different customized methods depending on how the items interact with the game
 
-//Locatation Class constructor with different attributes
+//Location Class constructor with different attributes
 class Location {
   constructor(
     name,
@@ -187,7 +187,7 @@ but you can't reach it because the rabbit is in the way and rabbits are stubborn
       //special text outcome for the kung-fu master if you haven't interacted with him yet
     } else if (this.name === "master" && masterLoop === 0) {
       log(
-        "\nAs you get closer, the martial artist quickly pushes you away, and with a secret techique, \
+        "\nAs you get closer, the martial artist quickly pushes you away, and with a secret technique, \
 slams you to the ground..."
       );
       keyPress();
@@ -358,7 +358,7 @@ the black and white rabbit hole goes...\n\n\
 Also be sure to remember this: S = 3"
       );
 
-      //interraction that lets the user choose the blue pill or the red pill
+      //interaction that lets the user choose the blue pill or the red pill
       let answer = await ask(
         "\nDo you want to take the Blue Pill or the Red Pill? > "
       );
@@ -697,7 +697,7 @@ I hope you enjoy your playthrough!\n\n\
   mainMenu();
 }
 
-//ask for the player's name and uses it accross the game
+//ask for the player's name and uses it across the game
 async function start() {
   console.clear();
   playerName = await ask("What is your name?\n\
@@ -822,7 +822,7 @@ CRT TV on a small end table..."
     keyPress();
     await keypress();
   }
-   //exeption to the intro to the 2nd room if coming from the east
+   //exception to the intro to the 2nd room if coming from the east
    //no encounter with the rabbit
   if (
     locationCurrent === "room2" &&
@@ -946,7 +946,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     //then it checks for a target
     for (let word of splitAnswer) {
       //if the target needed is in the answer
-      // it's asigned to a variable
+      // it's assigned to a variable
       if (objectLookUp[word]) {
         object = word;
       }
@@ -1035,7 +1035,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     let itemToRemove = itemLookUp[object].inventoryName;
     let currentRoomInventory = locationLookUp[locationCurrent].roomInventory;
 
-    //You can't really "drop" this item, so I added an exeption.
+    //You can't really "drop" this item, so I added an exception.
     if (itemToRemove === " Kung-Fu Skills") {
       notSure();
       setTimeout(game, 2000);
@@ -1074,7 +1074,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
     }
 
     //this is the locked door of the game to the north in the first room,
-    //the player needs to use a key to change the doorloop before it can open
+    //the player needs to use a key to change the doorLoop before it can open
     if (doorLoop === 0 && locationCurrent === "room1" && object === "north") {
       log("\nThis door won't open... there's a golden lock on it...");
       setTimeout(game, 2000);
