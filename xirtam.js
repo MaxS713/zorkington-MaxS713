@@ -72,9 +72,8 @@ class Location {
   }
 }
 
-
 //creating the rooms with their different attributes
-//name, description, furniture in the room, items in the room, 
+//name, description, furniture in the room, items in the room,
 //door you can go through and if it's the room first encounter
 let room1 = new Location(
   "Main Room",
@@ -822,8 +821,8 @@ CRT TV on a small end table..."
     keyPress();
     await keypress();
   }
-   //exception to the intro to the 2nd room if coming from the east
-   //no encounter with the rabbit
+  //exception to the intro to the 2nd room if coming from the east
+  //no encounter with the rabbit
   if (
     locationCurrent === "room2" &&
     locationLookUp[locationCurrent].firstEncounter === true &&
@@ -898,7 +897,6 @@ In the middle stands a person wearing a suit, he looks like an agent..."
     await keypress();
   }
 
-
   //this is the main screen that shows for each room
   console.clear();
 
@@ -935,7 +933,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
   //the answer is "sanitized"
   //the answer is also "split" at every space
   //into an array of each words it contains
-  let saniAnswer = answer.toLowerCase().replaceAll("-", "").replaceAll(".", "");
+  let saniAnswer = sani(answer)
   let splitAnswer = saniAnswer.split(" ");
   let object = "";
   let numberOfDirections = 0;
@@ -1003,9 +1001,9 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
         object = word;
       }
     }
-    let itemToTake = itemLookUp[object].inventoryName;
-    let currentRoomInventory = locationLookUp[locationCurrent].roomInventory;
     if (itemLookUp[object]) {
+      let itemToTake = itemLookUp[object].inventoryName;
+      let currentRoomInventory = locationLookUp[locationCurrent].roomInventory;
       if (currentRoomInventory.includes(itemToTake)) {
         //when the player "takes an object"
         //the object is "pushed" into his inventory
@@ -1032,14 +1030,13 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
       }
     }
 
-    let itemToRemove = itemLookUp[object].inventoryName;
-    let currentRoomInventory = locationLookUp[locationCurrent].roomInventory;
-
     //You can't really "drop" this item, so I added an exception.
     if (itemToRemove === " Kung-Fu Skills") {
       notSure();
       setTimeout(game, 2000);
     } else if (itemLookUp[object]) {
+      let itemToRemove = itemLookUp[object].inventoryName;
+      let currentRoomInventory = locationLookUp[locationCurrent].roomInventory;
       if (playerInventory.includes(itemToRemove)) {
         //when the player "removes an object"
         //the object is "pushed" into the room inventory
@@ -1058,7 +1055,7 @@ ${locationLookUp[locationCurrent].roomInventory}\n`);
       setTimeout(game, 2000);
     }
 
-    //action to move 
+    //action to move
   } else if (splitAnswer.includes("go")) {
     //since we're looking at each word in the answer
     // this is an overly complicated way of making sure a space between two directions
